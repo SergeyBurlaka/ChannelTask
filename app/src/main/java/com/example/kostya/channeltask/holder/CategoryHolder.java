@@ -22,4 +22,5 @@ public class CategoryHolder extends RecyclerView.ViewHolder {
         TextView channelName = (TextView) mView.findViewById(R.id.channel_name);
         channelName.setText(name);
     }
+
 }

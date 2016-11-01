@@ -16,16 +16,15 @@ import android.view.MenuItem;
 import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.fragment.ChannelCategoryFragment;
 import com.example.kostya.channeltask.fragment.ChannelFragment;
+import com.example.kostya.channeltask.fragment.SingleChannelProgramFragment;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 
 import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ChannelFragment.OnListFragmentInteractionListener,
-        ChannelCategoryFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, SingleChannelProgramFragment.OnFragmentInteractionListener {
     private static final String CHANNEL_LIST_TAG = "ChannelListFragment";
-    private static final String CHANNEL_CATEGORY_TAG = "ChannelCategoryList";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +104,7 @@ public class MainActivity extends AppCompatActivity
             replaceWithChannelCategoryFragment();
 
         } else if (id == R.id.channel_program_list) {
-
+            replaceWithSingleChannelProgramFragment();
         }
 
 
@@ -154,10 +153,12 @@ public class MainActivity extends AppCompatActivity
                 .commit();
     }
 
-
-    @Override
-    public void onListFragmentInteraction() {
-
+    private void replaceWithSingleChannelProgramFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        SingleChannelProgramFragment fragment = new SingleChannelProgramFragment();
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
+                .commit();
     }
 
     @Override
