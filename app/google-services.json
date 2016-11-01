@@ -1,0 +1,51 @@
+{
+  "project_info": {
+    "project_number": "445579325774",
+    "firebase_url": "https://channeltask.firebaseio.com",
+    "project_id": "channeltask",
+    "storage_bucket": "channeltask.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:445579325774:android:ac9f7fc920423eb2",
+        "android_client_info": {
+          "package_name": "com.example.kostya.channeltask"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "445579325774-mrr0vris4ivehdujg4ep3l4arfklcvon.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kostya.channeltask",
+            "certificate_hash": "644E821EDFA188A07496071FB020545408551F9F"
+          }
+        },
+        {
+          "client_id": "445579325774-shi4hg3ppjiqgidjm7gd0ho3gt60ifvn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [{ "current_key": "" }],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "445579325774-shi4hg3ppjiqgidjm7gd0ho3gt60ifvn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
