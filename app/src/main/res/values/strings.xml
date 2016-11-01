@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">ChannelTask</string>
+    <string name="title_activity_main2">MainActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="category_list">
+        <item>Детские</item>
+        <item>Кино</item>
+        <item>Музыкальные</item>
+        <item>Общеукраинские</item>
+        <item>Прочие</item>
+        <item>Региональные</item>
+        <item>Спортивные</item>
+    </string-array>
 </resources>

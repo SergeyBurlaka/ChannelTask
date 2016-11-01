@@ -1,8 +1,10 @@
-package com.example.kostya.channeltask;
+package com.example.kostya.channeltask.holder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+
+import com.example.kostya.channeltask.R;
 
 /**
  * Created by kostya on 01.11.16.
