@@ -21,6 +21,10 @@
         <activity android:name=".activity.SelectedCategoryActivity">
         </activity>
 
+        <service
+            android:name=".service.LoadAllChannelNameService"
+            android:exported="false">
+        </service>
     </application>
 
 </manifest>

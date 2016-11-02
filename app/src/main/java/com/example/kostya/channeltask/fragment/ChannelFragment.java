@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.example.kostya.channeltask.holder.ChannelHolder;
 import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.model.Channel;
+import com.example.kostya.channeltask.model.ChannelList;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -42,6 +43,10 @@ public class ChannelFragment extends Fragment {
             @Override
             protected void populateViewHolder(ChannelHolder channelHolder, Channel channel, int position) {
                 channelHolder.setName(channel.getName());
+//                if (ChannelList.getChannelName() == null) {
+//                    ChannelList list = ChannelList.getsChannelList();
+//                    list.addChannel(channel.getName());
+//                }
             }
         };
         recyclerView.setAdapter(firebaseRecyclerAdapter);

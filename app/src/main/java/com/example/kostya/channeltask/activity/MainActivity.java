@@ -1,7 +1,6 @@
 package com.example.kostya.channeltask.activity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.design.widget.NavigationView;
@@ -13,18 +12,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.kostya.channeltask.service.LoadAllChannelNameService;
 import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.fragment.ChannelCategoryFragment;
 import com.example.kostya.channeltask.fragment.ChannelFragment;
-import com.example.kostya.channeltask.fragment.SingleChannelProgramFragment;
+import com.example.kostya.channeltask.fragment.ChannelProgramViewPagerFragment;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 
 import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, SingleChannelProgramFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
     private static final String CHANNEL_LIST_TAG = "ChannelListFragment";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,13 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
         firebaseLogin();
+
+        Intent intent = new Intent(LoadAllChannelNameService.ACTION_START_LOAD);
+        intent.setClass(this, LoadAllChannelNameService.class);
+        startService(intent);
+
     }
 
 
@@ -78,9 +85,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -91,7 +95,6 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -155,14 +158,10 @@ public class MainActivity extends AppCompatActivity
 
     private void replaceWithSingleChannelProgramFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        SingleChannelProgramFragment fragment = new SingleChannelProgramFragment();
+        ChannelProgramViewPagerFragment fragment = new ChannelProgramViewPagerFragment();
         fragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
                 .commit();
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
 }
