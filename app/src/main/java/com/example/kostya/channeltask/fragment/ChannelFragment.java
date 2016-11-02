@@ -43,10 +43,6 @@ public class ChannelFragment extends Fragment {
             @Override
             protected void populateViewHolder(ChannelHolder channelHolder, Channel channel, int position) {
                 channelHolder.setName(channel.getName());
-//                if (ChannelList.getChannelName() == null) {
-//                    ChannelList list = ChannelList.getsChannelList();
-//                    list.addChannel(channel.getName());
-//                }
             }
         };
         recyclerView.setAdapter(firebaseRecyclerAdapter);

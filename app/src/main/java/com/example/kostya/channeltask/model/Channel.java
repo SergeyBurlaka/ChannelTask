@@ -35,11 +35,4 @@ public class Channel {
         this.id = id;
     }
 
-    public String getTvURL() {
-        return tvURL;
-    }
-
-    public void setTvURL(String tvURL) {
-        this.tvURL = tvURL;
-    }
 }

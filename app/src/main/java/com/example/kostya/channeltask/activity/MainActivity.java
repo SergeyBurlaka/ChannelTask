@@ -1,6 +1,7 @@
 package com.example.kostya.channeltask.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.design.widget.NavigationView;
@@ -12,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.kostya.channeltask.model.UserInformation;
 import com.example.kostya.channeltask.service.LoadAllChannelNameService;
 import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.fragment.ChannelCategoryFragment;
@@ -19,6 +21,10 @@ import com.example.kostya.channeltask.fragment.ChannelFragment;
 import com.example.kostya.channeltask.fragment.ChannelProgramViewPagerFragment;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
 
@@ -53,6 +59,7 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 // user is signed in!
+                setUserInfo();
                 replaceWithChannelListFragment();
             } else {
                 // user is not signed in. Maybe just wait for the user to press
@@ -114,6 +121,7 @@ public class MainActivity extends AppCompatActivity
     private void firebaseLogin() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
+
             replaceWithChannelListFragment();
             //signed in
         } else {
@@ -163,6 +171,28 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(LoadAllChannelNameService.ACTION_START_LOAD);
         intent.setClass(this, LoadAllChannelNameService.class);
         startService(intent);
+    }
+
+    private void setUserInfo() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String name = null, email = null;
+            for (UserInfo profile : user.getProviderData()) {
+                if (profile.getDisplayName() != null)
+                    name = profile.getDisplayName();
+                if (profile.getEmail() != null)
+                    email = profile.getEmail();
+                uploadUserInfoToFirebase(name, email);
+            }
+        }
+    }
+
+    private void uploadUserInfoToFirebase(String name, String email) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
+        UserInformation user = new UserInformation(email, name);
+        String uniqueId = email.replaceAll("[^A-Za-z]", "");
+        reference.child("users").child(uniqueId).setValue(user);
     }
 
 }

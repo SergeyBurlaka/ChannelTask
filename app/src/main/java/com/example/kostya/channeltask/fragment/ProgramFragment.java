@@ -66,7 +66,6 @@ public class ProgramFragment extends Fragment {
             @Override
             protected void populateViewHolder(ChannelProgramHolder channelProgramHolder, ChannelProgram channelProgram, int position) {
                 channelProgramHolder.setTvShowName(channelProgram.getTvShowName());
-                channelProgramHolder.setShowId(channelProgram.getShowID());
                 channelProgramHolder.setDate(channelProgram.getDate());
             }
         };

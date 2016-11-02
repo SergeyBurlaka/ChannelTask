@@ -3,6 +3,7 @@ package com.example.kostya.channeltask.fragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.model.ChannelList;
+import com.example.kostya.channeltask.model.UserInformation;
 
 
 public class ChannelProgramViewPagerFragment extends Fragment {
@@ -38,6 +40,11 @@ public class ChannelProgramViewPagerFragment extends Fragment {
             @Override
             public Fragment getItem(int position) {
                 return ProgramFragment.newInstance(position);
+            }
+
+            @Override
+            public CharSequence getPageTitle(int position) {
+                return ChannelList.getsChannelList().getChannelName().get(position);
             }
         });
         return view;

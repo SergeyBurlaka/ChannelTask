@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.example.kostya.channeltask.R;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -27,11 +28,6 @@ public class ChannelProgramHolder extends RecyclerView.ViewHolder {
         programDate.setText(countDate(date));
     }
 
-    public void setShowId(String showId) {
-        TextView programShowId = (TextView) mView.findViewById(R.id.program_channel_name);
-        programShowId.setText(showId);
-    }
-
     public void setTvShowName(String tvShowName) {
         TextView programTvShowName = (TextView) mView.findViewById(R.id.program_channel_tvShowName);
         programTvShowName.setText(tvShowName);
@@ -39,7 +35,8 @@ public class ChannelProgramHolder extends RecyclerView.ViewHolder {
 
     private String countDate(long date) {
         Date expire = new Date(date);
-        return expire.toString();
+        SimpleDateFormat simpleDate = new SimpleDateFormat("HH:mm");
+        return simpleDate.format(expire);
     }
 }
 
