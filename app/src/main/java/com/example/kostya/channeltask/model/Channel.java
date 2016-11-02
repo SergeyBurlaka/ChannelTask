@@ -13,10 +13,8 @@ public class Channel {
 
     }
 
-    public Channel(String channelName, String channelId, String channelTvUrl) {
-        name = channelName;
-        id = channelId;
-        tvURL = channelTvUrl;
+    public Channel(String name) {
+        this.name = name;
     }
 
     public String getName() {

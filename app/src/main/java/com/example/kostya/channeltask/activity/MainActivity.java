@@ -1,7 +1,6 @@
 package com.example.kostya.channeltask.activity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.design.widget.NavigationView;
@@ -13,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.kostya.channeltask.fragment.FaveChannelListFragment;
 import com.example.kostya.channeltask.model.UserInformation;
 import com.example.kostya.channeltask.service.LoadAllChannelNameService;
 import com.example.kostya.channeltask.R;
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main2, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -110,6 +110,8 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.channel_program_list) {
             replaceWithSingleChannelProgramFragment();
+        } else if (id == R.id.fave_channel_list) {
+            replaceWithFaveChannelListFragment();
         }
 
 
@@ -162,6 +164,14 @@ public class MainActivity extends AppCompatActivity
     private void replaceWithSingleChannelProgramFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         ChannelProgramViewPagerFragment fragment = new ChannelProgramViewPagerFragment();
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
+                .commit();
+    }
+
+    private void replaceWithFaveChannelListFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FaveChannelListFragment fragment = new FaveChannelListFragment();
         fragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
                 .commit();
