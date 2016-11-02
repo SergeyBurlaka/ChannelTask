@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import com.example.kostya.channeltask.R;
 
+import java.util.Date;
+
 /**
  * Created by kostya on 01.11.16.
  */
@@ -20,9 +22,9 @@ public class ChannelProgramHolder extends RecyclerView.ViewHolder {
 
 
 
-    public void setDate(String date) {
+    public void setDate(long date) {
         TextView programDate = (TextView) mView.findViewById(R.id.program_channel_date);
-//        programDate.setText(date);
+        programDate.setText(countDate(date));
     }
 
     public void setShowId(String showId) {
@@ -33,6 +35,11 @@ public class ChannelProgramHolder extends RecyclerView.ViewHolder {
     public void setTvShowName(String tvShowName) {
         TextView programTvShowName = (TextView) mView.findViewById(R.id.program_channel_tvShowName);
         programTvShowName.setText(tvShowName);
+    }
+
+    private String countDate(long date) {
+        Date expire = new Date(date);
+        return expire.toString();
     }
 }
 

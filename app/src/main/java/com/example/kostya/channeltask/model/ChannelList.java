@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class ChannelList {
     private static ChannelList sChannelList;
-    private  static HashSet<String> mChannelName;
+    private static HashSet<String> mChannelName;
     private static List<String> mChannelProgramName;
 
     private ChannelList() {
@@ -40,13 +40,14 @@ public class ChannelList {
         }
     }
 
-    public List<String > getChannelName() {
+    public List<String> getChannelName() {
         convertSetToList();
         return mChannelProgramName;
     }
 
     public static int getChannelSize() {
-        return mChannelName.size();
+        return (mChannelName != null && mChannelName.size() != 0) ?
+                mChannelName.size() : 0;
     }
 
 

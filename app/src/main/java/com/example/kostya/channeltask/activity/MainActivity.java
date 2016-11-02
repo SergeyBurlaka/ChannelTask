@@ -42,13 +42,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
         firebaseLogin();
-
-        Intent intent = new Intent(LoadAllChannelNameService.ACTION_START_LOAD);
-        intent.setClass(this, LoadAllChannelNameService.class);
-        startService(intent);
-
+        initServiceDownload();
     }
 
 
@@ -162,6 +157,12 @@ public class MainActivity extends AppCompatActivity
         fragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
                 .commit();
+    }
+
+    private void initServiceDownload() {
+        Intent intent = new Intent(LoadAllChannelNameService.ACTION_START_LOAD);
+        intent.setClass(this, LoadAllChannelNameService.class);
+        startService(intent);
     }
 
 }

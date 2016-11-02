@@ -67,6 +67,7 @@ public class ProgramFragment extends Fragment {
             protected void populateViewHolder(ChannelProgramHolder channelProgramHolder, ChannelProgram channelProgram, int position) {
                 channelProgramHolder.setTvShowName(channelProgram.getTvShowName());
                 channelProgramHolder.setShowId(channelProgram.getShowID());
+                channelProgramHolder.setDate(channelProgram.getDate());
             }
         };
         recyclerView.setAdapter(firebaseRecyclerAdapter);
