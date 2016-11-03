@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 
 import com.example.kostya.channeltask.Prefs.PrefManager;
 import com.example.kostya.channeltask.R;
-import com.example.kostya.channeltask.activity.MainActivity;
 import com.example.kostya.channeltask.holder.ChannelHolder;
 import com.example.kostya.channeltask.model.Channel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -28,10 +27,10 @@ import java.util.HashMap;
 public class FaveChannelListFragment extends Fragment {
     private ItemTouchHelper mItemTouchHelper;
     private RecyclerView mRecyclerView;
-    private HashMap<Integer, String> mFaveChannelList;
+    private HashMap<Integer, String> mFaveChannelMap;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
@@ -40,7 +39,7 @@ public class FaveChannelListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_channel_list, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.channel_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mFaveChannelList = new HashMap<>();
+        mFaveChannelMap = new HashMap<>();
 
         initFaveList(mRecyclerView);
         swipeToDelete();
@@ -60,7 +59,7 @@ public class FaveChannelListFragment extends Fragment {
             @Override
             protected void populateViewHolder(ChannelHolder channelHolder, Channel channel, int position) {
                 channelHolder.setName(channel.getName());
-                mFaveChannelList.put(position, channel.getName());
+                mFaveChannelMap.put(position, channel.getName());
             }
         };
         mRecyclerView.setAdapter(firebaseRecyclerAdapter);
@@ -83,7 +82,7 @@ public class FaveChannelListFragment extends Fragment {
 
     private void deleteItem(RecyclerView.ViewHolder viewHolder) {
         int position = viewHolder.getAdapterPosition();
-        String name = mFaveChannelList.get(position);
+        String name = mFaveChannelMap.get(position);
         FirebaseDatabase.getInstance()
                 .getReference()
                 .child("faves")

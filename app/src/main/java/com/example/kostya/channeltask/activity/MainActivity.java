@@ -2,6 +2,7 @@ package com.example.kostya.channeltask.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -11,8 +12,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.kostya.channeltask.Prefs.PrefManager;
+import com.example.kostya.channeltask.fragment.ActionChooserFragment;
 import com.example.kostya.channeltask.fragment.FaveChannelListFragment;
 import com.example.kostya.channeltask.model.UserInformation;
 import com.example.kostya.channeltask.service.LoadAllChannelNameService;
@@ -21,6 +24,8 @@ import com.example.kostya.channeltask.fragment.ChannelCategoryFragment;
 import com.example.kostya.channeltask.fragment.ChannelFragment;
 import com.example.kostya.channeltask.fragment.ChannelProgramViewPagerFragment;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
@@ -30,10 +35,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-    private static final String CHANNEL_LIST_TAG = "ChannelListFragment";
-    public static String UNIQ_USER_ID;
-
+        implements NavigationView.OnNavigationItemSelectedListener, ActionChooserFragment.OnChooserItemClickedListener {
+    public static final String CHANNEL_LIST_TAG = "ChannelListFragment";
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mActionBarDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,16 +47,21 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mActionBarDrawerToggle = new ActionBarDrawerToggle(
+                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
+
+        mActionBarDrawerToggle.syncState();
+
+        hideNavigation();
+
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
         firebaseLogin();
-        initServiceDownload();
+//        initServiceDownload();
     }
 
 
@@ -62,7 +72,8 @@ public class MainActivity extends AppCompatActivity
             if (resultCode == RESULT_OK) {
                 // user is signed in!
                 setUserInfo();
-                replaceWithChannelListFragment();
+                replaceWithChooserFragment();
+//                replaceWithChannelListFragment();
             } else {
                 // user is not signed in. Maybe just wait for the user to press
                 // "sign in" again, or show a message
@@ -72,9 +83,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -91,8 +102,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_logout) {
+            logout();
             return true;
         }
 
@@ -117,16 +128,24 @@ public class MainActivity extends AppCompatActivity
         }
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    @Override
+    public void onChannelProgramClick() {
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        mActionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        replaceWithChannelListFragment();
+    }
+
 
     private void firebaseLogin() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
-
-            replaceWithChannelListFragment();
+            replaceWithChooserFragment();
+//            replaceWithChannelListFragment();
             //signed in
         } else {
             //not signed in
@@ -137,6 +156,20 @@ public class MainActivity extends AppCompatActivity
                             .setProviders(AuthUI.GOOGLE_PROVIDER)
                             .build(),
                     RC_SIGN_IN);
+        }
+    }
+
+    private void replaceWithChooserFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        ActionChooserFragment fragment = new ActionChooserFragment();
+        if (fragmentManager.findFragmentByTag(CHANNEL_LIST_TAG) != null) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
+                    .commit();
+        } else {
+            fragmentManager.beginTransaction()
+                    .add(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
+                    .commit();
         }
     }
 
@@ -179,12 +212,6 @@ public class MainActivity extends AppCompatActivity
                 .commit();
     }
 
-    private void initServiceDownload() {
-        Intent intent = new Intent(LoadAllChannelNameService.ACTION_START_LOAD);
-        intent.setClass(this, LoadAllChannelNameService.class);
-        startService(intent);
-    }
-
     private void setUserInfo() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -199,14 +226,38 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private void logout() {
+        DatabaseReference reference = FirebaseDatabase.getInstance()
+                .getReference();
+        reference.child("users").child(PrefManager.getPrefManager().getUniqueUser(this))
+                .removeValue();
+
+        AuthUI.getInstance()
+                .signOut(this)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            hideNavigation();
+                            firebaseLogin();
+
+                        }
+                    }
+                });
+    }
+
+    private void hideNavigation() {
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        mActionBarDrawerToggle.setDrawerIndicatorEnabled(false);
+
+    }
+
     private void uploadUserInfoToFirebase(String name, String email) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
         UserInformation user = new UserInformation(email, name);
         String uniqueId = email.replaceAll("[^A-Za-z]", "");
         PrefManager.getPrefManager().setUniqueUser(uniqueId, this);
-        UNIQ_USER_ID = uniqueId;
         reference.child("users").child(uniqueId).setValue(user);
     }
-
 }
