@@ -181,17 +181,10 @@ public class MainActivity extends AppCompatActivity
 
     private void replaceWithChannelListFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        if (fragmentManager.findFragmentByTag(CHANNEL_LIST_TAG) == null) {
-            ChannelListFragment fragment = new ChannelListFragment();
-            fragmentManager.beginTransaction()
-                    .add(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
-                    .commit();
-        } else {
-            ChannelListFragment fragment = new ChannelListFragment();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
-                    .commit();
-        }
+        ChannelListFragment fragment = new ChannelListFragment();
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
+                .commit();
     }
 
     private void replaceWithChannelCategoryFragment() {
@@ -217,7 +210,6 @@ public class MainActivity extends AppCompatActivity
                 .replace(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
                 .commit();
     }
-
 
 
     private void logout() {
