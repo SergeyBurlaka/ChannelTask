@@ -23,4 +23,7 @@ public class CategoryHolder extends RecyclerView.ViewHolder {
         channelName.setText(name);
     }
 
+    public void setOnCategoryClickListener(View.OnClickListener listener) {
+        mView.setOnClickListener(listener);
+    }
 }

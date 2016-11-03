@@ -27,11 +27,7 @@ public class ChannelHolder extends RecyclerView.ViewHolder {
         channelName.setText(name);
     }
 
-    public void setBackground() {
-        mView.setBackgroundColor(Color.YELLOW);
-    }
-
-    public void setWhiteColor() {
-        mView.setBackgroundColor(Color.WHITE);
+    public void highlight(boolean highlight) {
+        mView.setBackgroundColor(highlight ? Color.YELLOW : Color.WHITE);
     }
 }

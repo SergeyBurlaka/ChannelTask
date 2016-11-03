@@ -10,15 +10,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.kostya.channeltask.FirebaseHelper;
 import com.example.kostya.channeltask.Prefs.PrefManager;
 import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.holder.ChannelProgramHolder;
-import com.example.kostya.channeltask.model.Channel;
 import com.example.kostya.channeltask.model.ChannelList;
 import com.example.kostya.channeltask.model.ChannelProgram;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
@@ -70,11 +69,8 @@ public class ProgramFragment extends Fragment {
     }
 
     private void initProgramList(RecyclerView recyclerView) {
-        DatabaseReference reference = FirebaseDatabase
-                .getInstance()
-                .getReference()
-                .child("Program")
-                .child("2016Jul08");
+
+        DatabaseReference reference = FirebaseHelper.getProgramReference();
 
         FirebaseRecyclerAdapter firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<ChannelProgram, ChannelProgramHolder>(ChannelProgram.class,
                 R.layout.fragment_program, ChannelProgramHolder.class, reference.orderByChild("showID").equalTo(mShowId)) {
@@ -98,13 +94,9 @@ public class ProgramFragment extends Fragment {
     }
 
     private void addFaveChannel() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        String uniqueId = PrefManager.getPrefManager().getUniqueUser(getContext());
 
-        Channel channel = new Channel(mShowId);
-        reference.child("faves")
-                .child(PrefManager.getPrefManager().getUniqueUser(getContext()))
-                .child(mShowId)
-                .setValue(channel);
+        FirebaseHelper.addToFave(uniqueId, mShowId);
         showToast();
     }
 

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.kostya.channeltask.FirebaseHelper;
 import com.example.kostya.channeltask.Prefs.PrefManager;
 import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.holder.ChannelHolder;
@@ -82,12 +83,8 @@ public class FaveChannelListFragment extends Fragment {
     private void deleteItem(RecyclerView.ViewHolder viewHolder) {
         int position = viewHolder.getAdapterPosition();
         String name = mFaveChannelMap.get(position);
-        FirebaseDatabase.getInstance()
-                .getReference()
-                .child("faves")
-                .child(PrefManager.getPrefManager().getUniqueUser(getContext()))
-                .child(name)
-                .removeValue();
+        String uniqueId = PrefManager.getPrefManager().getUniqueUser(getContext());
+        FirebaseHelper.deleteFromFave(name, uniqueId);
 
         initFaveList();
     }

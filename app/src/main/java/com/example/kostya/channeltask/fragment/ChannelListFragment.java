@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.kostya.channeltask.FirebaseHelper;
 import com.example.kostya.channeltask.Prefs.PrefManager;
 import com.example.kostya.channeltask.holder.ChannelHolder;
 import com.example.kostya.channeltask.R;
@@ -45,64 +46,24 @@ public class ChannelListFragment extends Fragment {
     }
 
     private void initChannelList() {
-        DatabaseReference reference = FirebaseDatabase.getInstance()
-                .getReference()
-                .child("Channels");
+        DatabaseReference reference = FirebaseHelper.getChannelReference();
 
         final FirebaseRecyclerAdapter firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Channel, ChannelHolder>(Channel.class,
                 R.layout.fragment_channel_item, ChannelHolder.class, reference) {
             @Override
             protected void populateViewHolder(ChannelHolder channelHolder, Channel channel, int position) {
-                if (mFaveList != null) {
-                    highlightFaveChannels(channelHolder, channel);
-                }
 
+                channelHolder.highlight(mFaveList.contains(channel.getId()));
                 channelHolder.setName(channel.getName());
             }
         };
         mRecyclerView.setAdapter(firebaseRecyclerAdapter);
     }
 
-    private void highlightFaveChannels(ChannelHolder channelHolder, Channel channel) {
-        for (int i = 0; i < mFaveList.size(); i++) {
-            if (TextUtils.equals(mFaveList.get(i), channel.getId())) {
-                channelHolder.setBackground();
-                break;
-            } else {
-                channelHolder.setWhiteColor();
-            }
-        }
-    }
-
-
     private void checkFaveChannels() {
-        DatabaseReference reference = FirebaseDatabase.getInstance()
-                .getReference()
-                .child("faves")
-                .child(PrefManager.getPrefManager().getUniqueUser(getContext()));
+        String uniqueUser = PrefManager.getPrefManager().getUniqueUser(getContext());
+        mFaveList = FirebaseHelper.getFaveChannelsList(uniqueUser);
+        initChannelList();
 
-        getFaveChannels(reference);
-
-    }
-
-    private void getFaveChannels(DatabaseReference reference) {
-
-
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    Channel faveChannel = data.getValue(Channel.class);
-                    String showID = faveChannel.getName();
-                    mFaveList.add(showID);
-                }
-                initChannelList();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 }

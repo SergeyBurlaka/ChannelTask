@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.kostya.channeltask.FirebaseHelper;
 import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.activity.SelectedCategoryActivity;
 import com.example.kostya.channeltask.holder.CategoryHolder;
@@ -22,6 +23,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class ChannelCategoryFragment extends Fragment {
+
+    private static final String TAG = ChannelCategoryFragment.class.getSimpleName();
+    private static final boolean DEBUG = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,8 +46,7 @@ public class ChannelCategoryFragment extends Fragment {
 
     private void initCategoryList(RecyclerView recyclerView) {
         final String[] categories = getResources().getStringArray(R.array.category_list);
-        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
-                .child("Category");
+        final DatabaseReference reference = FirebaseHelper.getCategoryReference();
 
         FirebaseRecyclerAdapter firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Channel, CategoryHolder>(Channel.class,
                 R.layout.fragment_channel_item, CategoryHolder.class, reference) {
@@ -58,13 +61,13 @@ public class ChannelCategoryFragment extends Fragment {
     }
 
     private void openSelectedCategory(CategoryHolder categoryHolder, final int position){
-        categoryHolder.mView.setOnClickListener(new View.OnClickListener() {
+        categoryHolder.setOnCategoryClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), SelectedCategoryActivity.class);
                 intent.putExtra(SelectedCategoryActivity.KEY_CATEGORY_SELECTED_POSITION, position);
                 startActivity(intent);
-                Log.i("Click", "onItemClickGeneral: position " + position);
+                if (DEBUG) Log.i(TAG, "onItemClickGeneral: position " + position);
             }
         });
     }

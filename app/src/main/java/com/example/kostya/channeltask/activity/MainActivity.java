@@ -33,7 +33,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ActionChooserFragment.OnChooserButtonClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ActionChooserFragment.OnChooserFragmentInteractionListener {
     public static final String CHANNEL_LIST_TAG = "ChannelListFragment";
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
@@ -167,18 +167,13 @@ public class MainActivity extends AppCompatActivity
     private void replaceWithChooserFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         ActionChooserFragment fragment = new ActionChooserFragment();
-        if (fragmentManager.findFragmentByTag(CHANNEL_LIST_TAG) != null) {
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
                     .commit();
-        } else {
-            fragmentManager.beginTransaction()
-                    .add(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
-                    .commit();
-        }
     }
 
     private void replaceWithChannelListFragment() {
+        showNavigationDrawer();
         FragmentManager fragmentManager = getSupportFragmentManager();
         ChannelListFragment fragment = new ChannelListFragment();
         fragmentManager.beginTransaction()
@@ -235,6 +230,11 @@ public class MainActivity extends AppCompatActivity
     private void hideNavigationDrawer() {
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mActionBarDrawerToggle.setDrawerIndicatorEnabled(false);
+    }
+
+    private void showNavigationDrawer() {
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        mActionBarDrawerToggle.setDrawerIndicatorEnabled(true);
     }
 
     private void uploadUserInfoToFirebase(String name, String email) {

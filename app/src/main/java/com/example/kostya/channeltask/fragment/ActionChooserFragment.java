@@ -17,10 +17,10 @@ import com.example.kostya.channeltask.service.LoadAllChannelNameService;
  */
 
 public class ActionChooserFragment extends Fragment {
-    private OnChooserButtonClickListener mOnChooserButtonClickListener;
+    private OnChooserFragmentInteractionListener mOnChooserFragmentInteractionListener;
     private Button mChannelSelectedButton;
 
-    public interface OnChooserButtonClickListener {
+    public interface OnChooserFragmentInteractionListener {
         void onChannelProgramClick();
     }
 
@@ -48,11 +48,11 @@ public class ActionChooserFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnChooserButtonClickListener) {
-            mOnChooserButtonClickListener = (OnChooserButtonClickListener) context;
+        if (context instanceof OnChooserFragmentInteractionListener) {
+            mOnChooserFragmentInteractionListener = (OnChooserFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnChooserButtonClickListener");
+                    + " must implement OnChooserFragmentInteractionListener");
         }
     }
 
@@ -64,8 +64,8 @@ public class ActionChooserFragment extends Fragment {
     }
 
     private void onItemSelected() {
-        if (mOnChooserButtonClickListener != null) {
-            mOnChooserButtonClickListener.onChannelProgramClick();
+        if (mOnChooserFragmentInteractionListener != null) {
+            mOnChooserFragmentInteractionListener.onChannelProgramClick();
         }
     }
 
