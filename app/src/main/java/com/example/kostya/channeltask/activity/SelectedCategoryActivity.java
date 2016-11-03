@@ -33,7 +33,9 @@ public class SelectedCategoryActivity extends AppCompatActivity {
     private void initSelectedChannelCategory(RecyclerView recyclerView, int selectedCategoryPosition) {
         String[] categories = getResources().getStringArray(R.array.category_list);
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Category").child(categories[selectedCategoryPosition]);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
+                .child("Category")
+                .child(categories[selectedCategoryPosition]);
 
         FirebaseRecyclerAdapter firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Channel, ChannelHolder>(Channel.class,
                 R.layout.fragment_channel_item, ChannelHolder.class, reference) {

@@ -7,7 +7,6 @@ package com.example.kostya.channeltask.model;
 public class Channel {
     private String name;
     private String id;
-    private String tvURL;
 
     public Channel() {
 
