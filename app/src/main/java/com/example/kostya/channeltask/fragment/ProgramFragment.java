@@ -8,11 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kostya.channeltask.Prefs.PrefManager;
 import com.example.kostya.channeltask.R;
+import com.example.kostya.channeltask.activity.MainActivity;
 import com.example.kostya.channeltask.holder.ChannelProgramHolder;
 import com.example.kostya.channeltask.model.Channel;
 import com.example.kostya.channeltask.model.ChannelList;
@@ -28,7 +28,7 @@ public class ProgramFragment extends Fragment {
     public static final String ARG_CHANNEL_POSITION = "ARG_CHANNEL_POSITION";
     private List<String> mChannelName;
     private String mShowId;
-    private Button mAddToFaveCheckBox;
+    private Button mAddToFaveButton;
     private static Toast mAddedToFaveToast;
 
     @Override
@@ -62,10 +62,10 @@ public class ProgramFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_channel_list, container, false);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.channel_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAddToFaveCheckBox = (Button) view.findViewById(R.id.add_to_fave);
-        mAddToFaveCheckBox.setVisibility(View.VISIBLE);
+        mAddToFaveButton = (Button) view.findViewById(R.id.add_to_fave);
+        mAddToFaveButton.setVisibility(View.VISIBLE);
 
-        mAddToFaveCheckBox.setOnClickListener(new View.OnClickListener() {
+        mAddToFaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addFaveChannel();
@@ -99,7 +99,10 @@ public class ProgramFragment extends Fragment {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
         Channel channel = new Channel(mShowId);
-        reference.child("faves").child(mShowId).setValue(channel);
+        reference.child("faves")
+                .child(PrefManager.getPrefManager().getUniqueUser(getContext()))
+                .child(mShowId)
+                .setValue(channel);
         showToast();
     }
 

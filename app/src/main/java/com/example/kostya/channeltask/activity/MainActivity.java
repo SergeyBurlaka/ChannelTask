@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.kostya.channeltask.Prefs.PrefManager;
 import com.example.kostya.channeltask.fragment.FaveChannelListFragment;
 import com.example.kostya.channeltask.model.UserInformation;
 import com.example.kostya.channeltask.service.LoadAllChannelNameService;
@@ -31,6 +32,7 @@ import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final String CHANNEL_LIST_TAG = "ChannelListFragment";
+    public static String UNIQ_USER_ID;
 
 
     @Override
@@ -202,6 +204,8 @@ public class MainActivity extends AppCompatActivity
 
         UserInformation user = new UserInformation(email, name);
         String uniqueId = email.replaceAll("[^A-Za-z]", "");
+        PrefManager.getPrefManager().setUniqueUser(uniqueId, this);
+        UNIQ_USER_ID = uniqueId;
         reference.child("users").child(uniqueId).setValue(user);
     }
 

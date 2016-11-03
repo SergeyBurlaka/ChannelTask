@@ -36,7 +36,9 @@ public class ChannelFragment extends Fragment {
     }
 
     private void initChannelList(RecyclerView recyclerView) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Channels");
+        DatabaseReference reference = FirebaseDatabase.getInstance()
+                .getReference()
+                .child("Channels");
 
         FirebaseRecyclerAdapter firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Channel, ChannelHolder>(Channel.class,
                 R.layout.fragment_channel_item, ChannelHolder.class, reference) {

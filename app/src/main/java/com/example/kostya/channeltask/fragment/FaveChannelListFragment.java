@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.kostya.channeltask.Prefs.PrefManager;
 import com.example.kostya.channeltask.R;
+import com.example.kostya.channeltask.activity.MainActivity;
 import com.example.kostya.channeltask.holder.ChannelHolder;
 import com.example.kostya.channeltask.model.Channel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -48,7 +50,10 @@ public class FaveChannelListFragment extends Fragment {
     }
 
     private void initFaveList(RecyclerView mRecyclerView) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("faves");
+        DatabaseReference reference = FirebaseDatabase.getInstance()
+                .getReference()
+                .child("faves")
+                .child(PrefManager.getPrefManager().getUniqueUser(getContext()));
 
         FirebaseRecyclerAdapter firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Channel, ChannelHolder>(Channel.class,
                 R.layout.fragment_channel_item, ChannelHolder.class, reference) {
@@ -82,6 +87,7 @@ public class FaveChannelListFragment extends Fragment {
         FirebaseDatabase.getInstance()
                 .getReference()
                 .child("faves")
+                .child(PrefManager.getPrefManager().getUniqueUser(getContext()))
                 .child(name)
                 .removeValue();
 
