@@ -23,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChannelFragment extends Fragment {
+public class ChannelListFragment extends Fragment {
     private List<String> mFaveList = new ArrayList<>();
     private RecyclerView mRecyclerView;
 

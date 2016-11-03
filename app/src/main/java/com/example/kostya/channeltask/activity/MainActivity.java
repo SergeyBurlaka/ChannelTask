@@ -12,16 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.example.kostya.channeltask.Prefs.PrefManager;
 import com.example.kostya.channeltask.fragment.ActionChooserFragment;
 import com.example.kostya.channeltask.fragment.FaveChannelListFragment;
 import com.example.kostya.channeltask.model.UserInformation;
-import com.example.kostya.channeltask.service.LoadAllChannelNameService;
 import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.fragment.ChannelCategoryFragment;
-import com.example.kostya.channeltask.fragment.ChannelFragment;
+import com.example.kostya.channeltask.fragment.ChannelListFragment;
 import com.example.kostya.channeltask.fragment.ChannelProgramViewPagerFragment;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,7 +33,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ActionChooserFragment.OnChooserItemClickedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ActionChooserFragment.OnChooserButtonClickListener {
     public static final String CHANNEL_LIST_TAG = "ChannelListFragment";
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
@@ -61,7 +59,6 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         firebaseLogin();
-//        initServiceDownload();
     }
 
 
@@ -71,9 +68,8 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 // user is signed in!
-                setUserInfo();
+                initUserInfo();
                 replaceWithChooserFragment();
-//                replaceWithChannelListFragment();
             } else {
                 // user is not signed in. Maybe just wait for the user to press
                 // "sign in" again, or show a message
@@ -112,12 +108,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.channel_list) {
             replaceWithChannelListFragment();
-            // Handle the camera action
         } else if (id == R.id.category_list) {
             replaceWithChannelCategoryFragment();
 
@@ -126,7 +120,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.fave_channel_list) {
             replaceWithFaveChannelListFragment();
         }
-
 
         DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -145,7 +138,6 @@ public class MainActivity extends AppCompatActivity
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             replaceWithChooserFragment();
-//            replaceWithChannelListFragment();
             //signed in
         } else {
             //not signed in
@@ -156,6 +148,20 @@ public class MainActivity extends AppCompatActivity
                             .setProviders(AuthUI.GOOGLE_PROVIDER)
                             .build(),
                     RC_SIGN_IN);
+        }
+    }
+
+    private void initUserInfo() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String name = null, email = null;
+            for (UserInfo profile : user.getProviderData()) {
+                if (profile.getDisplayName() != null)
+                    name = profile.getDisplayName();
+                if (profile.getEmail() != null)
+                    email = profile.getEmail();
+                uploadUserInfoToFirebase(name, email);
+            }
         }
     }
 
@@ -176,12 +182,12 @@ public class MainActivity extends AppCompatActivity
     private void replaceWithChannelListFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (fragmentManager.findFragmentByTag(CHANNEL_LIST_TAG) == null) {
-            ChannelFragment fragment = new ChannelFragment();
+            ChannelListFragment fragment = new ChannelListFragment();
             fragmentManager.beginTransaction()
                     .add(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
                     .commit();
         } else {
-            ChannelFragment fragment = new ChannelFragment();
+            ChannelListFragment fragment = new ChannelListFragment();
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
                     .commit();
@@ -212,24 +218,14 @@ public class MainActivity extends AppCompatActivity
                 .commit();
     }
 
-    private void setUserInfo() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            String name = null, email = null;
-            for (UserInfo profile : user.getProviderData()) {
-                if (profile.getDisplayName() != null)
-                    name = profile.getDisplayName();
-                if (profile.getEmail() != null)
-                    email = profile.getEmail();
-                uploadUserInfoToFirebase(name, email);
-            }
-        }
-    }
+
 
     private void logout() {
         DatabaseReference reference = FirebaseDatabase.getInstance()
                 .getReference();
-        reference.child("users").child(PrefManager.getPrefManager().getUniqueUser(this))
+
+        reference.child("users")
+                .child(PrefManager.getPrefManager().getUniqueUser(this))
                 .removeValue();
 
         AuthUI.getInstance()
@@ -240,7 +236,6 @@ public class MainActivity extends AppCompatActivity
                         if (task.isSuccessful()) {
                             hideNavigation();
                             firebaseLogin();
-
                         }
                     }
                 });
@@ -249,7 +244,6 @@ public class MainActivity extends AppCompatActivity
     private void hideNavigation() {
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mActionBarDrawerToggle.setDrawerIndicatorEnabled(false);
-
     }
 
     private void uploadUserInfoToFirebase(String name, String email) {

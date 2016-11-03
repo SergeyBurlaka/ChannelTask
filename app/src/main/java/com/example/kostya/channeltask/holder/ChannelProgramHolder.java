@@ -21,8 +21,6 @@ public class ChannelProgramHolder extends RecyclerView.ViewHolder {
         mView = itemView;
     }
 
-
-
     public void setDate(long date) {
         TextView programDate = (TextView) mView.findViewById(R.id.program_channel_date);
         programDate.setText(countDate(date));

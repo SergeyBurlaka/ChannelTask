@@ -3,9 +3,7 @@ package com.example.kostya.channeltask.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +17,10 @@ import com.example.kostya.channeltask.service.LoadAllChannelNameService;
  */
 
 public class ActionChooserFragment extends Fragment {
-    private OnChooserItemClickedListener mOnChooserItemClickedListener;
+    private OnChooserButtonClickListener mOnChooserButtonClickListener;
     private Button mChannelSelectedButton;
 
-    public interface OnChooserItemClickedListener {
+    public interface OnChooserButtonClickListener {
         void onChannelProgramClick();
     }
 
@@ -50,11 +48,11 @@ public class ActionChooserFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnChooserItemClickedListener) {
-            mOnChooserItemClickedListener = (OnChooserItemClickedListener) context;
+        if (context instanceof OnChooserButtonClickListener) {
+            mOnChooserButtonClickListener = (OnChooserButtonClickListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnChooserItemClickedListener");
+                    + " must implement OnChooserButtonClickListener");
         }
     }
 
@@ -66,8 +64,8 @@ public class ActionChooserFragment extends Fragment {
     }
 
     private void onItemSelected() {
-        if (mOnChooserItemClickedListener != null) {
-            mOnChooserItemClickedListener.onChannelProgramClick();
+        if (mOnChooserButtonClickListener != null) {
+            mOnChooserButtonClickListener.onChannelProgramClick();
         }
     }
 

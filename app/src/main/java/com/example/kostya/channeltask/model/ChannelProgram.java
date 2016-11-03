@@ -13,12 +13,6 @@ public class ChannelProgram {
 
     }
 
-    public ChannelProgram(long date, String showID, String tvShowName) {
-        this.date = date;
-        this.showID = showID;
-        this.tvShowName = tvShowName;
-    }
-
     public long getDate() {
         return date;
     }

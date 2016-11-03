@@ -65,13 +65,7 @@ public class ProgramFragment extends Fragment {
         mAddToFaveButton = (Button) view.findViewById(R.id.add_to_fave);
         mAddToFaveButton.setVisibility(View.VISIBLE);
 
-        mAddToFaveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addFaveChannel();
-            }
-        });
-
+        initAddToFaveButton();
         initProgramList(recyclerView);
         return view;
     }
@@ -93,6 +87,15 @@ public class ProgramFragment extends Fragment {
             }
         };
         recyclerView.setAdapter(firebaseRecyclerAdapter);
+    }
+
+    private void initAddToFaveButton() {
+        mAddToFaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addFaveChannel();
+            }
+        });
     }
 
     private void addFaveChannel() {

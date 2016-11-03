@@ -1,7 +1,6 @@
 package com.example.kostya.channeltask.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,14 +40,14 @@ public class FaveChannelListFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mFaveChannelMap = new HashMap<>();
 
-        initFaveList(mRecyclerView);
-        swipeToDelete();
+        initFaveList();
+        initSwipeToDelete();
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
 
         return view;
     }
 
-    private void initFaveList(RecyclerView mRecyclerView) {
+    private void initFaveList() {
         DatabaseReference reference = FirebaseDatabase.getInstance()
                 .getReference()
                 .child("faves")
@@ -65,7 +64,7 @@ public class FaveChannelListFragment extends Fragment {
         mRecyclerView.setAdapter(firebaseRecyclerAdapter);
     }
 
-    private void swipeToDelete() {
+    private void initSwipeToDelete() {
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
             public boolean onMove(RecyclerView mRecyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -90,6 +89,6 @@ public class FaveChannelListFragment extends Fragment {
                 .child(name)
                 .removeValue();
 
-        initFaveList(mRecyclerView);
+        initFaveList();
     }
 }
