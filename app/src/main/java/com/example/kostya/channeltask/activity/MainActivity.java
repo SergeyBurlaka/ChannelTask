@@ -60,24 +60,10 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        firebaseLogin();
+        replaceWithFragment(new ChannelListFragment());
     }
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_SIGN_IN) {
-            if (resultCode == RESULT_OK) {
-                // user is signed in!
-                initUserInfo();
-                replaceWithChooserFragment();
-            } else {
-                // user is not signed in. Maybe just wait for the user to press
-                // "sign in" again, or show a message
-            }
-        }
-    }
 
     @Override
     public void onBackPressed() {
@@ -113,14 +99,14 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.channel_list) {
-            replaceWithChannelListFragment(new ChannelListFragment());
+            replaceWithFragment(new ChannelListFragment());
         } else if (id == R.id.category_list) {
-            replaceWithChannelCategoryFragment();
+            replaceWithFragment(new ChannelCategoryFragment());
 
         } else if (id == R.id.channel_program_list) {
-            replaceWithSingleChannelProgramFragment();
+            replaceWithFragment(new ChannelProgramViewPagerFragment());
         } else if (id == R.id.fave_channel_list) {
-            replaceWithFaveChannelListFragment();
+            replaceWithFragment(new FaveChannelListFragment());
         }
 
         DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -131,82 +117,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onChannelProgramClick() {
         hideNavigationDrawer();
-        replaceWithChannelListFragment(new ChannelListFragment());
+        replaceWithFragment(new ChannelListFragment());
     }
 
 
-    private void firebaseLogin() {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
-            replaceWithChooserFragment();
-            //signed in
-        } else {
-            //not signed in
-            startActivityForResult(
-                    AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .setIsSmartLockEnabled(false)
-                            .setProviders(AuthUI.GOOGLE_PROVIDER)
-                            .build(),
-                    RC_SIGN_IN);
-        }
-    }
-
-    private void initUserInfo() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            String name = null, email = null;
-            for (UserInfo profile : user.getProviderData()) {
-                if (profile.getDisplayName() != null)
-                    name = profile.getDisplayName();
-                if (profile.getEmail() != null)
-                    email = profile.getEmail();
-                uploadUserInfoToFirebase(name, email);
-            }
-        }
-    }
-
-    private void replaceWithChooserFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        ActionChooserFragment fragment = new ActionChooserFragment();
-        fragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
-                .commit();
-    }
-
-    private void replaceWithChannelListFragment(Fragment fragment) {
+    private void replaceWithFragment(Fragment fragment) {
         showNavigationDrawer();
         FragmentManager fragmentManager = getSupportFragmentManager();
-//        ChannelListFragment fragment = new ChannelListFragment();
         fragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
                 .commit();
     }
-
-    private void replaceWithChannelCategoryFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        ChannelCategoryFragment fragment = new ChannelCategoryFragment();
-        fragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
-                .commit();
-    }
-
-    private void replaceWithSingleChannelProgramFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        ChannelProgramViewPagerFragment fragment = new ChannelProgramViewPagerFragment();
-        fragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
-                .commit();
-    }
-
-    private void replaceWithFaveChannelListFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FaveChannelListFragment fragment = new FaveChannelListFragment();
-        fragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
-                .commit();
-    }
-
 
     private void logout() {
         DatabaseReference reference = FirebaseDatabase.getInstance()
@@ -224,7 +145,8 @@ public class MainActivity extends AppCompatActivity
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             hideNavigationDrawer();
-                            firebaseLogin();
+                            Intent intent = new Intent(MainActivity.this, ChooserActivity.class);
+                            startActivity(intent);
                         }
                     }
                 });
@@ -240,19 +162,11 @@ public class MainActivity extends AppCompatActivity
         mActionBarDrawerToggle.setDrawerIndicatorEnabled(true);
     }
 
-    private void uploadUserInfoToFirebase(String name, String email) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-
-        User user = new User(email, name);
-        String uniqueId = email.replaceAll("[^A-Za-z]", "");
-        PrefManager.getPrefManager().setUniqueUser(uniqueId, this);
-        reference.child("users").child(uniqueId).setValue(user);
-    }
 
     @Override
     public void onCategoryClick(int position) {
         ChannelListFragment fragment = ChannelListFragment.newInstance(position);
-        replaceWithChannelListFragment(fragment);
+        replaceWithFragment(fragment);
 
     }
 }
