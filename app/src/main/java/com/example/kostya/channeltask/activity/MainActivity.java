@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.kostya.channeltask.FirebaseHelper;
 import com.example.kostya.channeltask.Prefs.PrefManager;
 import com.example.kostya.channeltask.fragment.ActionChooserFragment;
 import com.example.kostya.channeltask.fragment.FaveChannelListFragment;
@@ -62,8 +63,6 @@ public class MainActivity extends AppCompatActivity
 
         replaceWithFragment(new ChannelListFragment());
     }
-
-
 
     @Override
     public void onBackPressed() {
@@ -120,7 +119,6 @@ public class MainActivity extends AppCompatActivity
         replaceWithFragment(new ChannelListFragment());
     }
 
-
     private void replaceWithFragment(Fragment fragment) {
         showNavigationDrawer();
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -130,12 +128,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void logout() {
-        DatabaseReference reference = FirebaseDatabase.getInstance()
-                .getReference();
 
-        reference.child("users")
-                .child(PrefManager.getPrefManager().getUniqueUser(this))
-                .removeValue();
+        FirebaseHelper
+                .deleteUser(PrefManager.getPrefManager()
+                        .getUniqueUser(MainActivity.this));
+
+//        DatabaseReference reference = FirebaseDatabase.getInstance()
+//                .getReference();
+//        reference.child("users")
+//                .child(PrefManager.getPrefManager().getUniqueUser(this))
+//                .removeValue();
 
 
         AuthUI.getInstance()

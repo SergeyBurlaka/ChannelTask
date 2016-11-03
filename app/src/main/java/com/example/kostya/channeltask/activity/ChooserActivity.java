@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.kostya.channeltask.FirebaseHelper;
 import com.example.kostya.channeltask.Prefs.PrefManager;
 import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.fragment.ActionChooserFragment;
@@ -85,11 +86,12 @@ public class ChooserActivity extends AppCompatActivity {
     }
 
     private void uploadUserInfoToFirebase(String name, String email) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
         User user = new User(email, name);
         String uniqueId = email.replaceAll("[^A-Za-z]", "");
         PrefManager.getPrefManager().setUniqueUser(uniqueId, this);
-        reference.child("users").child(uniqueId).setValue(user);
+        FirebaseHelper.getUserReference().child(uniqueId).setValue(user);
+//        reference.child("users").child(uniqueId).setValue(user);
     }
 }

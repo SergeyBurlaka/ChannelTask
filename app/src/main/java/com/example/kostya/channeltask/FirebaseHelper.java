@@ -35,6 +35,10 @@ public class FirebaseHelper {
             FIREBASE_REFERENCE
                     .child("faves");
 
+    private static final DatabaseReference FIREBASE_USER_REVERENCE =
+            FIREBASE_REFERENCE
+            .child("users");
+
     public static DatabaseReference getProgramReference() {
         return FIREBASE_PROGRAM_REFERENCE;
     }
@@ -45,6 +49,10 @@ public class FirebaseHelper {
 
     public static DatabaseReference getChannelReference() {
         return FIREBASE_CHANNEL_REFERENCE;
+    }
+
+    public static DatabaseReference getUserReference() {
+        return FIREBASE_USER_REVERENCE;
     }
 
 
@@ -84,5 +92,9 @@ public class FirebaseHelper {
                 .child(uniqueUserId)
                 .child(channelName)
                 .removeValue();
+    }
+
+    public static void deleteUser(String uniqueUserId) {
+        FIREBASE_USER_REVERENCE.child(uniqueUserId).removeValue();
     }
 }
