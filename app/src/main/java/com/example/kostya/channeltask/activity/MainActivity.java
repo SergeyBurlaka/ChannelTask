@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity
 
         mActionBarDrawerToggle.syncState();
 
-        hideNavigation();
+        hideNavigationDrawer();
 
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -128,8 +128,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onChannelProgramClick() {
-        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-        mActionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        hideNavigationDrawer();
         replaceWithChannelListFragment();
     }
 
@@ -226,14 +225,14 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            hideNavigation();
+                            hideNavigationDrawer();
                             firebaseLogin();
                         }
                     }
                 });
     }
 
-    private void hideNavigation() {
+    private void hideNavigationDrawer() {
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mActionBarDrawerToggle.setDrawerIndicatorEnabled(false);
     }
