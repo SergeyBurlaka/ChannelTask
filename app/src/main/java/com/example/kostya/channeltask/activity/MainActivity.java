@@ -3,6 +3,7 @@ package com.example.kostya.channeltask.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -33,7 +34,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ActionChooserFragment.OnChooserFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ActionChooserFragment.OnChooserFragmentInteractionListener
+        , ChannelCategoryFragment.OnChannelCategoryItemClick {
     public static final String CHANNEL_LIST_TAG = "ChannelListFragment";
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.channel_list) {
-            replaceWithChannelListFragment();
+            replaceWithChannelListFragment(new ChannelListFragment());
         } else if (id == R.id.category_list) {
             replaceWithChannelCategoryFragment();
 
@@ -129,7 +131,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onChannelProgramClick() {
         hideNavigationDrawer();
-        replaceWithChannelListFragment();
+        replaceWithChannelListFragment(new ChannelListFragment());
     }
 
 
@@ -167,15 +169,15 @@ public class MainActivity extends AppCompatActivity
     private void replaceWithChooserFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         ActionChooserFragment fragment = new ActionChooserFragment();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
-                    .commit();
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
+                .commit();
     }
 
-    private void replaceWithChannelListFragment() {
+    private void replaceWithChannelListFragment(Fragment fragment) {
         showNavigationDrawer();
         FragmentManager fragmentManager = getSupportFragmentManager();
-        ChannelListFragment fragment = new ChannelListFragment();
+//        ChannelListFragment fragment = new ChannelListFragment();
         fragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, fragment, CHANNEL_LIST_TAG)
                 .commit();
@@ -215,7 +217,6 @@ public class MainActivity extends AppCompatActivity
                 .removeValue();
 
 
-
         AuthUI.getInstance()
                 .signOut(this)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -246,5 +247,12 @@ public class MainActivity extends AppCompatActivity
         String uniqueId = email.replaceAll("[^A-Za-z]", "");
         PrefManager.getPrefManager().setUniqueUser(uniqueId, this);
         reference.child("users").child(uniqueId).setValue(user);
+    }
+
+    @Override
+    public void onCategoryClick(int position) {
+        ChannelListFragment fragment = ChannelListFragment.newInstance(position);
+        replaceWithChannelListFragment(fragment);
+
     }
 }

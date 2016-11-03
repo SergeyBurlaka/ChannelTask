@@ -25,13 +25,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChannelListFragment extends Fragment {
+    public static String ARG_CATEGORY_POSITION = "CATEGORY_POSITION";
     private List<String> mFaveList = new ArrayList<>();
     private RecyclerView mRecyclerView;
+    private DatabaseReference mCategoryDBReference;
+    private String mSelectedCategory;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (getArguments() != null) {
+            int position = getArguments().getInt(ARG_CATEGORY_POSITION);
+            String[] categories = getResources().getStringArray(R.array.category_list);
+            mSelectedCategory = categories[position];
+            mCategoryDBReference = FirebaseHelper.getChannelReference();
+        }
+    }
+
+    public static ChannelListFragment newInstance(int position) {
+        ChannelListFragment fragment = new ChannelListFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_CATEGORY_POSITION, position);
+        fragment.setArguments(args);
+
+        return fragment;
     }
 
     @Override
@@ -46,10 +64,11 @@ public class ChannelListFragment extends Fragment {
     }
 
     private void initChannelList() {
-        DatabaseReference reference = FirebaseHelper.getChannelReference();
-
         final FirebaseRecyclerAdapter firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Channel, ChannelHolder>(Channel.class,
-                R.layout.fragment_channel_item, ChannelHolder.class, reference) {
+                R.layout.fragment_channel_item, ChannelHolder.class, mSelectedCategory != null ?
+                mCategoryDBReference.orderByChild(mSelectedCategory).equalTo(true)
+                : mCategoryDBReference
+        ) {
             @Override
             protected void populateViewHolder(ChannelHolder channelHolder, Channel channel, int position) {
 
@@ -63,7 +82,8 @@ public class ChannelListFragment extends Fragment {
     private void checkFaveChannels() {
         String uniqueUser = PrefManager.getPrefManager().getUniqueUser(getContext());
         mFaveList = FirebaseHelper.getFaveChannelsList(uniqueUser);
+        if (mCategoryDBReference == null)
+            mCategoryDBReference = FirebaseHelper.getChannelReference();
         initChannelList();
-
     }
 }

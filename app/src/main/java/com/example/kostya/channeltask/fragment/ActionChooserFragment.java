@@ -25,7 +25,6 @@ public class ActionChooserFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        initServiceDownload();
     }
 
     @Override

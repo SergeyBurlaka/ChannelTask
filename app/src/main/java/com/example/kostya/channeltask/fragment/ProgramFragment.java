@@ -23,7 +23,6 @@ import java.util.List;
 
 public class ProgramFragment extends Fragment {
     public static final String ARG_CHANNEL_NAME = "ARG_CHANNEL_NAME";
-    private List<String> mChannelName;
     private String mShowId;
     private Button mAddToFaveButton;
     private static Toast mAddedToFaveToast;
@@ -43,8 +42,6 @@ public class ProgramFragment extends Fragment {
         Bundle args = new Bundle();
         args.putString(ARG_CHANNEL_NAME, showId);
         fragment.setArguments(args);
-//        args.putInt(ARG_CHANNEL_NAME, position);
-//        fragment.setArguments(args);
 
         return fragment;
     }

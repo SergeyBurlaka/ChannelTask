@@ -75,7 +75,7 @@ public class ChannelProgramViewPagerFragment extends Fragment {
 
             @Override
             public Fragment getItem(int position) {
-                return ProgramFragment.newInstance(mChannelName.get(position));//position);
+                return ProgramFragment.newInstance(mChannelName.get(position));
             }
 
             @Override
