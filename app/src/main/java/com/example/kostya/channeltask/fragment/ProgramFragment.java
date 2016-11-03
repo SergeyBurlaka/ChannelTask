@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.example.kostya.channeltask.Prefs.PrefManager;
 import com.example.kostya.channeltask.R;
-import com.example.kostya.channeltask.activity.MainActivity;
 import com.example.kostya.channeltask.holder.ChannelProgramHolder;
 import com.example.kostya.channeltask.model.Channel;
 import com.example.kostya.channeltask.model.ChannelList;
@@ -78,7 +77,7 @@ public class ProgramFragment extends Fragment {
                 .child("2016Jul08");
 
         FirebaseRecyclerAdapter firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<ChannelProgram, ChannelProgramHolder>(ChannelProgram.class,
-                R.layout.single_channel_program_info, ChannelProgramHolder.class, reference.orderByChild("showID").equalTo(mShowId)) {
+                R.layout.fragment_program, ChannelProgramHolder.class, reference.orderByChild("showID").equalTo(mShowId)) {
             @Override
             protected void populateViewHolder(ChannelProgramHolder channelProgramHolder, ChannelProgram channelProgram, int position) {
                 channelProgramHolder.setTvShowName(channelProgram.getTvShowName());
