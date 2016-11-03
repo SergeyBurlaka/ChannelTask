@@ -1,7 +1,6 @@
 package com.example.kostya.channeltask.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.kostya.channeltask.R;
-import com.example.kostya.channeltask.service.LoadAllChannelNameService;
 
 /**
  * Created by kostya on 03.11.16.
@@ -27,7 +25,7 @@ public class ActionChooserFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initServiceDownload();
+//        initServiceDownload();
     }
 
     @Override
@@ -57,11 +55,7 @@ public class ActionChooserFragment extends Fragment {
     }
 
 
-    private void initServiceDownload() {
-        Intent intent = new Intent(LoadAllChannelNameService.ACTION_START_LOAD);
-        intent.setClass(getContext(), LoadAllChannelNameService.class);
-        getActivity().startService(intent);
-    }
+
 
     private void onItemSelected() {
         if (mOnChooserFragmentInteractionListener != null) {

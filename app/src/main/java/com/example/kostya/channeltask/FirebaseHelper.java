@@ -1,8 +1,5 @@
 package com.example.kostya.channeltask;
 
-import android.content.Context;
-
-import com.example.kostya.channeltask.Prefs.PrefManager;
 import com.example.kostya.channeltask.model.Channel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -61,10 +58,10 @@ public class FirebaseHelper {
     }
 
     public static List<String> getFaveChannelsList(String uniqueUserId) {
-        FIREBASE_CATEGORY_REFERENCE.child(uniqueUserId);
+        DatabaseReference reference = FIREBASE_FAVES_REFERENCE.child(uniqueUserId);
 
         final List<String> faveList = new ArrayList<>();
-        FIREBASE_CATEGORY_REFERENCE.addValueEventListener(new ValueEventListener() {
+        reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {

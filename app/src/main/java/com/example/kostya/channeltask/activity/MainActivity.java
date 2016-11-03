@@ -16,7 +16,7 @@ import android.view.MenuItem;
 import com.example.kostya.channeltask.Prefs.PrefManager;
 import com.example.kostya.channeltask.fragment.ActionChooserFragment;
 import com.example.kostya.channeltask.fragment.FaveChannelListFragment;
-import com.example.kostya.channeltask.model.UserInformation;
+import com.example.kostya.channeltask.model.User;
 import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.fragment.ChannelCategoryFragment;
 import com.example.kostya.channeltask.fragment.ChannelListFragment;
@@ -214,6 +214,8 @@ public class MainActivity extends AppCompatActivity
                 .child(PrefManager.getPrefManager().getUniqueUser(this))
                 .removeValue();
 
+
+
         AuthUI.getInstance()
                 .signOut(this)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -240,7 +242,7 @@ public class MainActivity extends AppCompatActivity
     private void uploadUserInfoToFirebase(String name, String email) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
-        UserInformation user = new UserInformation(email, name);
+        User user = new User(email, name);
         String uniqueId = email.replaceAll("[^A-Za-z]", "");
         PrefManager.getPrefManager().setUniqueUser(uniqueId, this);
         reference.child("users").child(uniqueId).setValue(user);

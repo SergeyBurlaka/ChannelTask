@@ -4,15 +4,15 @@ package com.example.kostya.channeltask.model;
  * Created by kostya on 02.11.16.
  */
 
-public class UserInformation {
+public class User {
     private String mEmail;
     private String mName;
 
-    public UserInformation() {
+    public User() {
 
     }
 
-    public UserInformation(String email, String name) {
+    public User(String email, String name) {
         mEmail = email;
         mName = name;
     }

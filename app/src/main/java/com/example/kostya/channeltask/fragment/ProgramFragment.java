@@ -14,7 +14,6 @@ import com.example.kostya.channeltask.FirebaseHelper;
 import com.example.kostya.channeltask.Prefs.PrefManager;
 import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.holder.ChannelProgramHolder;
-import com.example.kostya.channeltask.model.ChannelList;
 import com.example.kostya.channeltask.model.ChannelProgram;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
@@ -23,7 +22,7 @@ import java.util.List;
 
 
 public class ProgramFragment extends Fragment {
-    public static final String ARG_CHANNEL_POSITION = "ARG_CHANNEL_POSITION";
+    public static final String ARG_CHANNEL_NAME = "ARG_CHANNEL_NAME";
     private List<String> mChannelName;
     private String mShowId;
     private Button mAddToFaveButton;
@@ -33,23 +32,20 @@ public class ProgramFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            if (mChannelName == null) {
-                mChannelName = ChannelList.getsChannelList().getChannelName();
-            }
-
-            int currentPosition = getArguments().getInt(ARG_CHANNEL_POSITION, 0);
-            mShowId = mChannelName.get(currentPosition);
-            //when
+            mShowId = getArguments().getString(ARG_CHANNEL_NAME);
         }
     }
 
-    public static ProgramFragment newInstance(int position) {
+    public static ProgramFragment newInstance(String showId) {
         if (mAddedToFaveToast != null)
             mAddedToFaveToast.cancel();
         ProgramFragment fragment = new ProgramFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_CHANNEL_POSITION, position);
+        args.putString(ARG_CHANNEL_NAME, showId);
         fragment.setArguments(args);
+//        args.putInt(ARG_CHANNEL_NAME, position);
+//        fragment.setArguments(args);
+
         return fragment;
     }
 
