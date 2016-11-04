@@ -42,6 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/stop_service"
+            android:onClick="onClickShowAccelerometerDataFragment"
             android:text="DATA"
             />
 
@@ -50,6 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/show_acc_fragment_button"
+            android:onClick="onClickShowAccelerometerGraphFragment"
             android:text="Schedule"/>
 
         <Spinner
