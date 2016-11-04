@@ -4,19 +4,15 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 
 import com.example.kostya.channeltask.FirebaseHelper;
 import com.example.kostya.channeltask.Prefs.PrefManager;
 import com.example.kostya.channeltask.R;
-import com.example.kostya.channeltask.fragment.ActionChooserFragment;
 import com.example.kostya.channeltask.model.User;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
 
@@ -86,12 +82,10 @@ public class ChooserActivity extends AppCompatActivity {
     }
 
     private void uploadUserInfoToFirebase(String name, String email) {
-//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-
         User user = new User(email, name);
         String uniqueId = email.replaceAll("[^A-Za-z]", "");
         PrefManager.getPrefManager().setUniqueUser(uniqueId, this);
+
         FirebaseHelper.getUserReference().child(uniqueId).setValue(user);
-//        reference.child("users").child(uniqueId).setValue(user);
     }
 }

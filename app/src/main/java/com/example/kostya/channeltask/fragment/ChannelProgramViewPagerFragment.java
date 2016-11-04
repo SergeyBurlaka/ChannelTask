@@ -22,17 +22,12 @@ import java.util.List;
 
 public class ChannelProgramViewPagerFragment extends Fragment {
     private ViewPager mChannelProgramViewPager;
-
-    public ChannelProgramViewPagerFragment() {
-        // Required empty public constructor
-    }
+    private List<String> mChannelName = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
-    List<String> mChannelName = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

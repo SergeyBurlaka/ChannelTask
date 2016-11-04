@@ -55,6 +55,10 @@ public class FirebaseHelper {
         return FIREBASE_USER_REVERENCE;
     }
 
+    public static DatabaseReference getFaveReference(String uniqueUserId) {
+        return FIREBASE_FAVES_REFERENCE.child(uniqueUserId);
+    }
+
 
     public static void addToFave(String uniqueUserId, String showId) {
         Channel channel = new Channel(showId);

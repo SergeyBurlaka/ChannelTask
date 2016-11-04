@@ -18,28 +18,25 @@ import com.google.firebase.database.DatabaseReference;
 
 public class ChannelCategoryFragment extends Fragment {
 
-    private static final String TAG = ChannelCategoryFragment.class.getSimpleName();
-    private static final boolean DEBUG = true;
-    private OnChannelCategoryItemClick mOnChannelCategoryItemClick;
+    private OnChannelCategoryItemClickListener mOnChannelCategoryItemClickListener;
 
-    public interface OnChannelCategoryItemClick {
+    public interface OnChannelCategoryItemClickListener {
         void onCategoryClick(int position);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof ActionChooserFragment.OnChooserFragmentInteractionListener) {
-            mOnChannelCategoryItemClick = (OnChannelCategoryItemClick) context;
+        if (context instanceof OnChannelCategoryItemClickListener) {
+            mOnChannelCategoryItemClickListener = (OnChannelCategoryItemClickListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnChooserFragmentInteractionListener");
+                    + " must implement OnChannelCategoryItemClickListener");
         }
     }
 
@@ -63,18 +60,18 @@ public class ChannelCategoryFragment extends Fragment {
             @Override
             protected void populateViewHolder(CategoryHolder categoryHolder, Channel channel, final int position) {
                 categoryHolder.setName(categories[position]);
-                openSelectedCategory(categoryHolder, position);
+                categoryClick(categoryHolder, position);
             }
         };
         recyclerView.setAdapter(firebaseRecyclerAdapter);
 
     }
 
-    private void openSelectedCategory(CategoryHolder categoryHolder, final int position) {
+    private void categoryClick(CategoryHolder categoryHolder, final int position) {
         categoryHolder.setOnCategoryClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mOnChannelCategoryItemClick.onCategoryClick(position);
+                mOnChannelCategoryItemClickListener.onCategoryClick(position);
             }
         });
     }

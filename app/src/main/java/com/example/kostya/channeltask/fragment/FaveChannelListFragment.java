@@ -49,10 +49,10 @@ public class FaveChannelListFragment extends Fragment {
     }
 
     private void initFaveList() {
-        DatabaseReference reference = FirebaseDatabase.getInstance()
-                .getReference()
-                .child("faves")
-                .child(PrefManager.getPrefManager().getUniqueUser(getContext()));
+
+        String uniqueUserId = PrefManager.getPrefManager().getUniqueUser(getContext());
+        DatabaseReference reference = FirebaseHelper
+                .getFaveReference(uniqueUserId);
 
         FirebaseRecyclerAdapter firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Channel, ChannelHolder>(Channel.class,
                 R.layout.fragment_channel_item, ChannelHolder.class, reference) {
