@@ -16,4 +16,14 @@
         <item>Региональные</item>
         <item>Спортивные</item>
     </string-array>
+
+    <string-array name="sensor_delay_time">
+        <item>2 seconds</item>
+        <item>1 second</item>
+        <item>5 seconds</item>
+        <item>10 seconds</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

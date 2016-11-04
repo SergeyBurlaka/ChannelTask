@@ -43,8 +43,8 @@ public class ChannelCategoryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_channel_list, container, false);
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.channel_recycler_view);
+        View view = inflater.inflate(R.layout.fragment_recycler_view, container, false);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         initCategoryList(recyclerView);

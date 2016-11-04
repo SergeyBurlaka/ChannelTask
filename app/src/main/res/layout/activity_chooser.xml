@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/task_chooser_button"
         android:layout_centerHorizontal="true"
+        android:onClick="onClickAccelerometerTask"
         android:text="ACC TASK"/>
 
 </RelativeLayout>

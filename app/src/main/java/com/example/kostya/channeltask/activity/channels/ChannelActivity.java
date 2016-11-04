@@ -1,4 +1,4 @@
-package com.example.kostya.channeltask.activity;
+package com.example.kostya.channeltask.activity.channels;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.kostya.channeltask.FirebaseHelper;
-import com.example.kostya.channeltask.Prefs.PrefManager;
+import com.example.kostya.channeltask.prefs.PrefManager;
+import com.example.kostya.channeltask.activity.ChooserActivity;
 import com.example.kostya.channeltask.fragment.FaveChannelListFragment;
 import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.fragment.ChannelCategoryFragment;
@@ -25,7 +26,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-public class MainActivity extends AppCompatActivity
+public class ChannelActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
         , ChannelCategoryFragment.OnChannelCategoryItemClickListener {
     public static final String CHANNEL_LIST_TAG = "ChannelListFragment";
@@ -109,7 +110,7 @@ public class MainActivity extends AppCompatActivity
     private void logout() {
         FirebaseHelper
                 .deleteUser(PrefManager.getPrefManager()
-                        .getUniqueUser(MainActivity.this));
+                        .getUniqueUser(ChannelActivity.this));
 
         AuthUI.getInstance()
                 .signOut(this)
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Intent intent = new Intent(MainActivity.this, ChooserActivity.class);
+                            Intent intent = new Intent(ChannelActivity.this, ChooserActivity.class);
                             startActivity(intent);
                         }
                     }

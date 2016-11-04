@@ -1,13 +1,17 @@
 package com.example.kostya.channeltask;
 
 import com.example.kostya.channeltask.model.Channel;
+import com.example.kostya.channeltask.model.acc_model.AccelerometerData;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,7 +41,11 @@ public class FirebaseHelper {
 
     private static final DatabaseReference FIREBASE_USER_REVERENCE =
             FIREBASE_REFERENCE
-            .child("users");
+                    .child("users");
+
+    private static final DatabaseReference FIREBASE_ACCELEROMETER_REFERENCE =
+            FIREBASE_REFERENCE
+                    .child("Accelerometer");
 
     public static DatabaseReference getProgramReference() {
         return FIREBASE_PROGRAM_REFERENCE;
@@ -59,6 +67,22 @@ public class FirebaseHelper {
         return FIREBASE_FAVES_REFERENCE.child(uniqueUserId);
     }
 
+    public static DatabaseReference getAccelerometerReference() {
+        return FIREBASE_ACCELEROMETER_REFERENCE;
+    }
+
+    public static DatabaseReference getAccelerometerDataForUser(String uniqueUserId) {
+
+        return FIREBASE_ACCELEROMETER_REFERENCE
+                .child(uniqueUserId);
+    }
+
+    public static void uploadAccelerometerData(String uniqueUserId, AccelerometerData data) {
+        FIREBASE_ACCELEROMETER_REFERENCE
+                .child(uniqueUserId)
+                .push()
+                .setValue(data);
+    }
 
     public static void addToFave(String uniqueUserId, String showId) {
         Channel channel = new Channel(showId);
@@ -99,6 +123,8 @@ public class FirebaseHelper {
     }
 
     public static void deleteUser(String uniqueUserId) {
-        FIREBASE_USER_REVERENCE.child(uniqueUserId).removeValue();
+        FIREBASE_USER_REVERENCE
+                .child(uniqueUserId)
+                .removeValue();
     }
 }

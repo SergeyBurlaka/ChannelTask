@@ -11,14 +11,12 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.kostya.channeltask.FirebaseHelper;
-import com.example.kostya.channeltask.Prefs.PrefManager;
+import com.example.kostya.channeltask.prefs.PrefManager;
 import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.holder.ChannelProgramHolder;
 import com.example.kostya.channeltask.model.ChannelProgram;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
-
-import java.util.List;
 
 
 public class ProgramFragment extends Fragment {
@@ -50,8 +48,8 @@ public class ProgramFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_channel_list, container, false);
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.channel_recycler_view);
+        View view = inflater.inflate(R.layout.fragment_recycler_view, container, false);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAddToFaveButton = (Button) view.findViewById(R.id.add_to_fave);
         mAddToFaveButton.setVisibility(View.VISIBLE);

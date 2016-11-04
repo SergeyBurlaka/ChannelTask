@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.example.kostya.channeltask.FirebaseHelper;
-import com.example.kostya.channeltask.Prefs.PrefManager;
+import com.example.kostya.channeltask.activity.accelerometer.AccelerometerTaskActivity;
+import com.example.kostya.channeltask.activity.channels.ChannelActivity;
+import com.example.kostya.channeltask.prefs.PrefManager;
 import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.model.User;
 import com.firebase.ui.auth.AuthUI;
@@ -29,7 +31,7 @@ public class ChooserActivity extends AppCompatActivity {
     private void firebaseLogin() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
-            openChannelTaskActivity();
+//            openChannelTaskActivity();
 
             //signed in
         } else {
@@ -62,8 +64,17 @@ public class ChooserActivity extends AppCompatActivity {
         openChannelTaskActivity();
     }
 
+    public void onClickAccelerometerTask(View view) {
+        openAccelerometerActivity();
+    }
+
     private void openChannelTaskActivity() {
-        Intent intent = new Intent(ChooserActivity.this, MainActivity.class);
+        Intent intent = new Intent(ChooserActivity.this, ChannelActivity.class);
+        startActivity(intent);
+    }
+
+    private void openAccelerometerActivity() {
+        Intent intent = new Intent(ChooserActivity.this, AccelerometerTaskActivity.class);
         startActivity(intent);
     }
 

@@ -1,4 +1,4 @@
-package com.example.kostya.channeltask.Prefs;
+package com.example.kostya.channeltask.prefs;
 
 import android.content.Context;
 import android.content.SharedPreferences;

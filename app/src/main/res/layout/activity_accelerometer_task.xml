@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_accelerometer_task"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.kostya.channeltask.activity.accelerometer.AccelerometerTaskActivity">
+
+    <FrameLayout
+        android:id="@+id/accelerometer_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/service_controlTab">
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/service_controlTab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
+
+        <Button
+            android:id="@+id/start_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClickStartAccSensor"
+            android:text="Start"/>
+
+        <Button
+            android:id="@+id/stop_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/start_service"
+            android:onClick="onClickStopAccSensor"
+            android:text="Stop"/>
+
+        <Button
+            android:id="@+id/show_acc_fragment_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/stop_service"
+            android:text="DATA"
+            />
+
+        <Button
+            android:id="@+id/show_acc_graf_fragment_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/show_acc_fragment_button"
+            android:text="Schedule"/>
+
+        <Spinner
+            android:layout_below="@id/show_acc_fragment_button"
+            android:id="@+id/sensor_update_time_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/sensor_delay_time"/>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>
