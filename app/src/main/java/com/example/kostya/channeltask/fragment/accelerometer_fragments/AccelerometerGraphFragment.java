@@ -41,7 +41,9 @@ public class AccelerometerGraphFragment extends Fragment {
 
     private void getAxis() {
         String uniqueId = PrefManager.getPrefManager().getUniqueUser(getContext());
-        DatabaseReference reference = FirebaseHelper.getAccelerometerDataForUser(uniqueId);
+        int sessionId = PrefManager.getPrefManager().getLastSessionNumber(getContext());
+
+        DatabaseReference reference = FirebaseHelper.getAccelerometerDataForUser(uniqueId, sessionId);
 
 
         reference.orderByChild("x").addValueEventListener(new ValueEventListener() {
@@ -70,7 +72,6 @@ public class AccelerometerGraphFragment extends Fragment {
             dataPointLineGraphSeries.appendData(initDataPoint(x, y), true, mAccelerometerDataList.size());
         }
         mAccelerometerGraph.addSeries(dataPointLineGraphSeries);
-
     }
 
     private DataPoint initDataPoint(float x, float y) {

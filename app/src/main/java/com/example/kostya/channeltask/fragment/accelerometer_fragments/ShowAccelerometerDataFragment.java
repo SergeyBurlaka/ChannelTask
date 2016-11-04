@@ -15,19 +15,15 @@ import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.holder.acc_holders.AccelerometerDataHolder;
 import com.example.kostya.channeltask.model.acc_model.AccelerometerData;
 import com.example.kostya.channeltask.prefs.PrefManager;
+import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 public class ShowAccelerometerDataFragment extends Fragment {
     private static final String TODAYS_DATE = "04/11/2016";
-
-    public static ShowAccelerometerDataFragment newInstance(String param1, String param2) {
-        ShowAccelerometerDataFragment fragment = new ShowAccelerometerDataFragment();
-        Bundle args = new Bundle();
-
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,11 +48,12 @@ public class ShowAccelerometerDataFragment extends Fragment {
 
         String uniqueUser = PrefManager.getPrefManager().getUniqueUser(getContext());
 
-        DatabaseReference reference = FirebaseHelper.getAccelerometerDataForUser(uniqueUser);
+        DatabaseReference reference = FirebaseHelper.getDataFromAllAccelerometerSessions(uniqueUser);
 
         FirebaseRecyclerAdapter firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<AccelerometerData, AccelerometerDataHolder>(AccelerometerData.class,
                 R.layout.fragment_accelerometer_item, AccelerometerDataHolder.class,
                 reference.orderByChild("date").startAt(TODAYS_DATE)) {
+
             @Override
             protected void populateViewHolder(AccelerometerDataHolder accelerometerDataHolder, AccelerometerData accelerometerData, int position) {
                 accelerometerDataHolder.setX(accelerometerData.getX());
@@ -66,5 +63,7 @@ public class ShowAccelerometerDataFragment extends Fragment {
             }
         };
         recyclerView.setAdapter(firebaseRecyclerAdapter);
+
+
     }
 }

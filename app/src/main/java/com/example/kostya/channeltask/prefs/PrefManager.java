@@ -11,6 +11,7 @@ import android.preference.PreferenceManager;
 public class PrefManager {
     private static PrefManager sPrefManager;
     private static final String KEY_UNIQUE_USER_EMAIL = "KEY_UNIQUE_USER_EMAIL";
+    private static final String KEY_LAST_SESSION_NUMBER = "KEY_LAST_SESSION_NUMBER";
 
     private PrefManager() {
 
@@ -34,6 +35,19 @@ public class PrefManager {
     public String getUniqueUser(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         return preferences.getString(KEY_UNIQUE_USER_EMAIL, "");
+    }
+
+    public void setSessionNumber(int sessionNumber, Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        preferences
+                .edit()
+                .putInt(KEY_LAST_SESSION_NUMBER, sessionNumber)
+                .apply();
+    }
+
+    public int getLastSessionNumber(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getInt(KEY_LAST_SESSION_NUMBER, 0);
     }
 
 }

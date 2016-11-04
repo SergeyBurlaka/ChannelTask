@@ -47,6 +47,12 @@ public class FirebaseHelper {
             FIREBASE_REFERENCE
                     .child("Accelerometer");
 
+    private static final DatabaseReference FIREBASE_ACCELEROMETER_ALL_SESSIONS =
+            FIREBASE_REFERENCE
+            .child("Accelerometer")
+            .child("AllSessions");
+
+
     public static DatabaseReference getProgramReference() {
         return FIREBASE_PROGRAM_REFERENCE;
     }
@@ -71,15 +77,33 @@ public class FirebaseHelper {
         return FIREBASE_ACCELEROMETER_REFERENCE;
     }
 
-    public static DatabaseReference getAccelerometerDataForUser(String uniqueUserId) {
+    public static DatabaseReference getAccelerometerAllSessions() {
+        return FIREBASE_ACCELEROMETER_ALL_SESSIONS;
+    }
+
+    public static DatabaseReference getAccelerometerDataForUser(String uniqueUserId, int sessionId) {
 
         return FIREBASE_ACCELEROMETER_REFERENCE
+                .child(uniqueUserId)
+                .child("session" + sessionId);
+    }
+
+    public static void uploadAccelerometerAllSessionsData(String uniqueUserId, AccelerometerData data) {
+        FIREBASE_ACCELEROMETER_ALL_SESSIONS
+                .child(uniqueUserId)
+                .push()
+                .setValue(data);
+    }
+
+    public static DatabaseReference getDataFromAllAccelerometerSessions(String uniqueUserId) {
+        return FIREBASE_ACCELEROMETER_ALL_SESSIONS
                 .child(uniqueUserId);
     }
 
-    public static void uploadAccelerometerData(String uniqueUserId, AccelerometerData data) {
+    public static void uploadAccelerometerData(String uniqueUserId, AccelerometerData data, int sessionId) {
         FIREBASE_ACCELEROMETER_REFERENCE
                 .child(uniqueUserId)
+                .child("session" + sessionId)
                 .push()
                 .setValue(data);
     }

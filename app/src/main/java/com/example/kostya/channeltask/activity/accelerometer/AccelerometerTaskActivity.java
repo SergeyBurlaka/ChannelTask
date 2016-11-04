@@ -30,6 +30,7 @@ public class AccelerometerTaskActivity extends AppCompatActivity {
     private Spinner mSensorDelaySpinner;
     private static int mSensorDelayMS = 2000;
     private CountDownTimer mSensorUpdateTimer;
+    private int mSessionId;
 
 
     @Override
@@ -58,6 +59,11 @@ public class AccelerometerTaskActivity extends AppCompatActivity {
 
     public void onClickStopAccSensor(View view) {
         mSensorManager.unregisterListener(mSensorEventListener);
+        if (mSensorUpdateTimer != null)
+            mSensorUpdateTimer.cancel();
+        mSensorUpdateTimer = null;
+        mSessionId++;
+
     }
 
     public void onClickShowAccelerometerDataFragment(View view) {
@@ -133,6 +139,8 @@ public class AccelerometerTaskActivity extends AppCompatActivity {
         Date date = new Date();
 
         AccelerometerData data = new AccelerometerData(dateFormat.format(date), values[0], values[1], values[2]);
-        FirebaseHelper.uploadAccelerometerData(uniqueId, data);
+        FirebaseHelper.uploadAccelerometerData(uniqueId, data, mSessionId);
+        FirebaseHelper.uploadAccelerometerAllSessionsData(uniqueId, data);
+        PrefManager.getPrefManager().setSessionNumber(mSessionId, AccelerometerTaskActivity.this);
     }
 }
