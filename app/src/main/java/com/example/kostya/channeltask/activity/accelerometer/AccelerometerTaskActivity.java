@@ -28,7 +28,7 @@ public class AccelerometerTaskActivity extends AppCompatActivity {
     private SensorManager mSensorManager;
     private Sensor mAccelerometerSensor;
     private Spinner mSensorDelaySpinner;
-    private static int mSensorDelayMS = 2000;
+    private int mSensorDelayMS = 2000;
     private CountDownTimer mSensorUpdateTimer;
     private int mSessionId;
 
@@ -134,13 +134,12 @@ public class AccelerometerTaskActivity extends AppCompatActivity {
     }
 
     private void uploadAccelerometerDataToFirebase(float[] values) {
-        String uniqueId = PrefManager.getPrefManager().getUniqueUser(AccelerometerTaskActivity.this);
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
 
         AccelerometerData data = new AccelerometerData(dateFormat.format(date), values[0], values[1], values[2]);
-        FirebaseHelper.uploadAccelerometerData(uniqueId, data, mSessionId);
-        FirebaseHelper.uploadAccelerometerAllSessionsData(uniqueId, data);
+        FirebaseHelper.uploadAccelerometerData(data, mSessionId);
+        FirebaseHelper.uploadAccelerometerAllSessionsData(data);
         PrefManager.getPrefManager().setSessionNumber(mSessionId, AccelerometerTaskActivity.this);
     }
 }

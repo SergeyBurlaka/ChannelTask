@@ -1,4 +1,4 @@
-package com.example.kostya.channeltask.fragment;
+package com.example.kostya.channeltask.fragment.channel_fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 
 import com.example.kostya.channeltask.FirebaseHelper;
 import com.example.kostya.channeltask.R;
-import com.example.kostya.channeltask.holder.CategoryHolder;
-import com.example.kostya.channeltask.model.Channel;
+import com.example.kostya.channeltask.holder.channel_holder.CategoryHolder;
+import com.example.kostya.channeltask.model.channel_model.Channel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 

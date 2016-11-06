@@ -1,4 +1,4 @@
-package com.example.kostya.channeltask.holder;
+package com.example.kostya.channeltask.holder.channel_holder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

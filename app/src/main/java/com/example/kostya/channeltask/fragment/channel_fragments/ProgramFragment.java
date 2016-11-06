@@ -1,4 +1,4 @@
-package com.example.kostya.channeltask.fragment;
+package com.example.kostya.channeltask.fragment.channel_fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,10 +11,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.kostya.channeltask.FirebaseHelper;
-import com.example.kostya.channeltask.prefs.PrefManager;
 import com.example.kostya.channeltask.R;
-import com.example.kostya.channeltask.holder.ChannelProgramHolder;
-import com.example.kostya.channeltask.model.ChannelProgram;
+import com.example.kostya.channeltask.holder.channel_holder.ChannelProgramHolder;
+import com.example.kostya.channeltask.model.channel_model.ChannelProgram;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 
@@ -85,9 +84,7 @@ public class ProgramFragment extends Fragment {
     }
 
     private void addFaveChannel() {
-        String uniqueId = PrefManager.getPrefManager().getUniqueUser(getContext());
-
-        FirebaseHelper.addToFave(uniqueId, mShowId);
+        FirebaseHelper.addToFave(mShowId);
         showToast();
     }
 

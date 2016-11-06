@@ -32,7 +32,7 @@ public class ChooserActivity extends AppCompatActivity {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
 //            openChannelTaskActivity();
-
+            initUserInfo();
             //signed in
         } else {
             //not signed in
@@ -97,6 +97,6 @@ public class ChooserActivity extends AppCompatActivity {
         String uniqueId = email.replaceAll("[^A-Za-z]", "");
         PrefManager.getPrefManager().setUniqueUser(uniqueId, this);
 
-        FirebaseHelper.getUserReference().child(uniqueId).setValue(user);
+        FirebaseHelper.addUser(uniqueId, user);
     }
 }

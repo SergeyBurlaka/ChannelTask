@@ -1,4 +1,4 @@
-package com.example.kostya.channeltask.fragment;
+package com.example.kostya.channeltask.fragment.channel_fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,10 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.kostya.channeltask.FirebaseHelper;
-import com.example.kostya.channeltask.prefs.PrefManager;
-import com.example.kostya.channeltask.holder.ChannelHolder;
+import com.example.kostya.channeltask.holder.channel_holder.ChannelHolder;
 import com.example.kostya.channeltask.R;
-import com.example.kostya.channeltask.model.Channel;
+import com.example.kostya.channeltask.model.channel_model.Channel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 
@@ -75,8 +74,7 @@ public class ChannelListFragment extends Fragment {
     }
 
     private void checkFaveChannels() {
-        String uniqueUser = PrefManager.getPrefManager().getUniqueUser(getContext());
-        mFaveList = FirebaseHelper.getFaveChannelsList(uniqueUser);
+        mFaveList = FirebaseHelper.getFaveChannelsList();
         if (mCategoryDBReference == null)
             mCategoryDBReference = FirebaseHelper.getChannelReference();
         initChannelList();

@@ -1,4 +1,4 @@
-package com.example.kostya.channeltask.model;
+package com.example.kostya.channeltask.model.channel_model;
 
 /**
  * Created by kostya on 01.11.16.
