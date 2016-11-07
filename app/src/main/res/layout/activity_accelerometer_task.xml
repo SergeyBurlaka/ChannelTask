@@ -7,22 +7,15 @@
     android:layout_height="match_parent"
     tools:context="com.example.kostya.channeltask.activity.accelerometer.AccelerometerTaskActivity">
 
-    <FrameLayout
-        android:id="@+id/accelerometer_fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/service_controlTab">
-
-    </FrameLayout>
-
     <RelativeLayout
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:id="@+id/service_controlTab"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:focusable="true"
+        android:layout_centerInParent="true"
+        android:focusableInTouchMode="true">
 
         <Button
             android:id="@+id/start_service"
@@ -39,41 +32,35 @@
             android:onClick="onClickStopAccSensor"
             android:text="Stop"/>
 
-        <Button
-            android:id="@+id/show_acc_fragment_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/stop_service"
-            android:onClick="onClickShowAccelerometerDataFragment"
-            android:text="DATA"
-            />
-
-        <Button
-            android:id="@+id/show_acc_graf_fragment_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/show_acc_fragment_button"
-            android:onClick="onClickShowAccelerometerGraphFragment"
-            android:text="GRAPH"/>
-
         <Spinner
             android:id="@+id/sensor_update_time_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/show_acc_fragment_button"
-            android:entries="@array/sensor_delay_time"
-            android:layout_alignBottom="@+id/service_duration_edit_text"/>
+            android:layout_alignBottom="@+id/service_duration_edit_text"
+            android:layout_below="@id/start_service"
+            android:entries="@array/sensor_delay_time"/>
 
         <EditText
-            android:layout_toRightOf="@id/sensor_update_time_spinner"
             android:id="@+id/service_duration_edit_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Service duration"
             android:layout_below="@id/start_service"
+            android:layout_toRightOf="@id/sensor_update_time_spinner"
+            android:hint="Service duration"
             android:inputType="number"
             android:maxLength="1"/>
 
     </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/accelerometer_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/service_controlTab"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+    </FrameLayout>
 
 </RelativeLayout>

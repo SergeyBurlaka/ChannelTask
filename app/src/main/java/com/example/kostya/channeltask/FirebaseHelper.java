@@ -1,5 +1,6 @@
 package com.example.kostya.channeltask;
 
+import com.example.kostya.channeltask.model.acc_model.Session;
 import com.example.kostya.channeltask.model.channel_model.Channel;
 import com.example.kostya.channeltask.model.User;
 import com.example.kostya.channeltask.model.acc_model.AccelerometerData;
@@ -75,7 +76,7 @@ public class FirebaseHelper {
                 .child("session" + sessionId);
     }
 
-    public static void uploadAccelerometerAllSessionsData(AccelerometerData data) {
+    public static void uploadAccelerometerAllSessionsData(Session data) {
         FIREBASE_ACCELEROMETER_ALL_SESSIONS
                 .child(sUniqueUserId)
                 .push()
@@ -87,10 +88,16 @@ public class FirebaseHelper {
                 .child(sUniqueUserId);
     }
 
-    public static void uploadAccelerometerData(AccelerometerData data, int sessionId) {
+    public static DatabaseReference getDataFromSession(String sessionName) {
+        return FIREBASE_ACCELEROMETER_REFERENCE
+                .child(sUniqueUserId)
+                .child(sessionName);
+    }
+
+    public static void uploadAccelerometerData(AccelerometerData data, int sessionId, String sessionStartDate) {
         FIREBASE_ACCELEROMETER_REFERENCE
                 .child(sUniqueUserId)
-                .child("session" + sessionId)
+                .child("session" + sessionId + " " + sessionStartDate)
                 .push()
                 .setValue(data);
     }

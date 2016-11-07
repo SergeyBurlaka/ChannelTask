@@ -1,15 +1,19 @@
 package com.example.kostya.channeltask.activity.accelerometer;
 
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -18,24 +22,28 @@ import android.widget.TextView;
 
 import com.example.kostya.channeltask.FirebaseHelper;
 import com.example.kostya.channeltask.R;
-import com.example.kostya.channeltask.fragment.accelerometer_fragments.AccelerometerGraphFragment;
-import com.example.kostya.channeltask.fragment.accelerometer_fragments.ShowAccelerometerDataFragment;
+import com.example.kostya.channeltask.activity.ChooserActivity;
+import com.example.kostya.channeltask.fragment.accelerometer_fragments.AccelerometerDataFragment;
+import com.example.kostya.channeltask.fragment.accelerometer_fragments.AccelerometerSessionFragment;
 import com.example.kostya.channeltask.model.acc_model.AccelerometerData;
+import com.example.kostya.channeltask.model.acc_model.Session;
 import com.example.kostya.channeltask.prefs.PrefManager;
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class AccelerometerTaskActivity extends AppCompatActivity {
-    private static final String KEY_SAVED_SESSION_ID = "KEY_SAVED_SESSION_ID";
-
+public class AccelerometerTaskActivity extends AppCompatActivity implements  AccelerometerSessionFragment.OnSessionClickListener {
     private SensorManager mSensorManager;
     private Sensor mAccelerometerSensor;
     private Spinner mSensorDelaySpinner;
     private CountDownTimer mSensorUpdateTimer;
     private int mSensorDelayMS = 1000;
     private int mSessionId;
+    private String mSessionStartDate = getSessionStartDate();
 
 
     @Override
@@ -51,13 +59,7 @@ public class AccelerometerTaskActivity extends AppCompatActivity {
 
         mSessionId = PrefManager.getPrefManager().getLastSessionNumber(AccelerometerTaskActivity.this);
         spinnerSelectedItemClickListener();
-        replaceFragment(new ShowAccelerometerDataFragment());
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        mSessionId = savedInstanceState.getInt(KEY_SAVED_SESSION_ID);
+        replaceFragment(new AccelerometerSessionFragment());
     }
 
     @Override
@@ -68,6 +70,8 @@ public class AccelerometerTaskActivity extends AppCompatActivity {
     }
 
     public void onClickStartAccSensor(View view) {
+        Session data = new Session("session" + mSessionId + " " + mSessionStartDate);
+        FirebaseHelper.uploadAccelerometerAllSessionsData(data);
         registerSensor();
     }
 
@@ -77,18 +81,21 @@ public class AccelerometerTaskActivity extends AppCompatActivity {
         cancelSensorUpdateTimer();
     }
 
-    public void onClickShowAccelerometerDataFragment(View view) {
-        replaceFragment(new ShowAccelerometerDataFragment());
-    }
-
-    public void onClickShowAccelerometerGraphFragment(View view) {
-        replaceFragment(new AccelerometerGraphFragment());
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(KEY_SAVED_SESSION_ID, mSessionId);
-        super.onSaveInstanceState(outState);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                logout();
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -104,7 +111,7 @@ public class AccelerometerTaskActivity extends AppCompatActivity {
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
             if (!textView.getText().toString().equals("")) {
                 int durationInSec = Integer.parseInt(textView.getText().toString()) * 60000;
-                setServiceDuration(durationInSec);
+                setSensorUpdateDuration(durationInSec);
                 registerSensor();
             } else {
                 unregisterSensor();
@@ -163,8 +170,8 @@ public class AccelerometerTaskActivity extends AppCompatActivity {
         mSensorUpdateTimer.start();
     }
 
-    private void setServiceDuration(int duration) {
-        CountDownTimer serviceDurationTimer = new CountDownTimer(duration, 1000) {
+    private void setSensorUpdateDuration(int duration) {
+        CountDownTimer updateDuration = new CountDownTimer(duration, 1000) {
             @Override
             public void onTick(long l) {
             }
@@ -175,25 +182,31 @@ public class AccelerometerTaskActivity extends AppCompatActivity {
                 mSessionId++;
             }
         };
-        serviceDurationTimer.start();
+        updateDuration.start();
     }
 
     private void uploadAccelerometerDataToFirebase(float[] values) {
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("dd:MM:yyy HH:mm:ss");
         Date date = new Date();
 
         AccelerometerData data = new AccelerometerData(dateFormat.format(date), values[0], values[1], values[2]);
-        FirebaseHelper.uploadAccelerometerData(data, mSessionId);
-        FirebaseHelper.uploadAccelerometerAllSessionsData(data);
+        FirebaseHelper.uploadAccelerometerData(data, mSessionId, mSessionStartDate);
     }
 
     private void cancelSensorUpdateTimer() {
         if (mSensorUpdateTimer != null) {
             mSensorUpdateTimer.cancel();
             mSessionId++;
+            mSessionStartDate = getSessionStartDate();
             PrefManager.getPrefManager().setSessionNumber(mSessionId, AccelerometerTaskActivity.this);
         }
         mSensorUpdateTimer = null;
+    }
+
+    private String getSessionStartDate() {
+        DateFormat sessionDate = new SimpleDateFormat("dd:MM:yyyy HH:mm:ss");
+        Date date = new Date();
+        return sessionDate.format(date);
     }
 
     private void registerSensor() {
@@ -203,6 +216,31 @@ public class AccelerometerTaskActivity extends AppCompatActivity {
 
     private void unregisterSensor() {
         mSensorManager.unregisterListener(mSensorEventListener);
+    }
 
+    private void logout() {
+        FirebaseHelper
+                .deleteUser(PrefManager.getPrefManager()
+                        .getUniqueUser(AccelerometerTaskActivity.this));
+
+        AuthUI.getInstance()
+                .signOut(this)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Intent intent = new Intent(AccelerometerTaskActivity.this,
+                                    ChooserActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void onSessionClick(String sessionName) {
+        Intent intent = new Intent(AccelerometerTaskActivity.this, SessionActivity.class);
+        intent.putExtra(SessionActivity.ARG_SESSION_NAME, sessionName);
+        startActivity(intent);
     }
 }
