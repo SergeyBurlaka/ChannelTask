@@ -30,9 +30,8 @@ public class AccelerometerGraphFragment extends Fragment {
     private List<AccelerometerData> mAccelerometerDataList;
     private GraphView mAccelerometerGraph;
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_accelerometer_graph, container, false);
         mAccelerometerGraph = (GraphView) view.findViewById(R.id.accelerometer_graph);
         getAxis();

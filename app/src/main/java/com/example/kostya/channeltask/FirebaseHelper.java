@@ -1,7 +1,5 @@
 package com.example.kostya.channeltask;
 
-import android.content.Context;
-
 import com.example.kostya.channeltask.model.channel_model.Channel;
 import com.example.kostya.channeltask.model.User;
 import com.example.kostya.channeltask.model.acc_model.AccelerometerData;
@@ -19,7 +17,7 @@ import java.util.List;
  */
 
 public class FirebaseHelper {
-    private static String mUniqueUserId;
+    private static String sUniqueUserId;
 
     private static final DatabaseReference FIREBASE_REFERENCE = FirebaseDatabase.getInstance().getReference();
 
@@ -50,8 +48,8 @@ public class FirebaseHelper {
 
     private static final DatabaseReference FIREBASE_ACCELEROMETER_ALL_SESSIONS =
             FIREBASE_REFERENCE
-            .child("Accelerometer")
-            .child("AllSessions");
+                    .child("Accelerometer")
+                    .child("AllSessions");
 
 
     public static DatabaseReference getProgramReference() {
@@ -66,44 +64,32 @@ public class FirebaseHelper {
         return FIREBASE_CHANNEL_REFERENCE;
     }
 
-    public static DatabaseReference getUserReference(Context context) {
-        return FIREBASE_USER_REVERENCE;
-    }
-
-    public static DatabaseReference getFaveReference(String uniqueUserId) {
-        return FIREBASE_FAVES_REFERENCE.child(uniqueUserId);
-    }
-
-    public static DatabaseReference getAccelerometerReference() {
-        return FIREBASE_ACCELEROMETER_REFERENCE;
-    }
-
-    public static DatabaseReference getAccelerometerAllSessions() {
-        return FIREBASE_ACCELEROMETER_ALL_SESSIONS;
+    public static DatabaseReference getFaveReference() {
+        return FIREBASE_FAVES_REFERENCE.child(sUniqueUserId);
     }
 
     public static DatabaseReference getAccelerometerDataForUser(int sessionId) {
 
         return FIREBASE_ACCELEROMETER_REFERENCE
-                .child(mUniqueUserId)
+                .child(sUniqueUserId)
                 .child("session" + sessionId);
     }
 
     public static void uploadAccelerometerAllSessionsData(AccelerometerData data) {
         FIREBASE_ACCELEROMETER_ALL_SESSIONS
-                .child(mUniqueUserId)
+                .child(sUniqueUserId)
                 .push()
                 .setValue(data);
     }
 
     public static DatabaseReference getDataFromAllAccelerometerSessions() {
         return FIREBASE_ACCELEROMETER_ALL_SESSIONS
-                .child(mUniqueUserId);
+                .child(sUniqueUserId);
     }
 
     public static void uploadAccelerometerData(AccelerometerData data, int sessionId) {
         FIREBASE_ACCELEROMETER_REFERENCE
-                .child(mUniqueUserId)
+                .child(sUniqueUserId)
                 .child("session" + sessionId)
                 .push()
                 .setValue(data);
@@ -113,13 +99,33 @@ public class FirebaseHelper {
         Channel channel = new Channel(showId);
 
         FIREBASE_FAVES_REFERENCE
-                .child(mUniqueUserId)
+                .child(sUniqueUserId)
                 .child(showId)
                 .setValue(channel);
     }
 
+    public static void addUser(String uniqueUserId, User user) {
+        FIREBASE_USER_REVERENCE
+                .child(uniqueUserId)
+                .setValue(user);
+        sUniqueUserId = uniqueUserId;
+    }
+
+    public static void deleteFromFave(String channelName) {
+        FIREBASE_FAVES_REFERENCE
+                .child(sUniqueUserId)
+                .child(channelName)
+                .removeValue();
+    }
+
+    public static void deleteUser(String uniqueUserId) {
+        FIREBASE_USER_REVERENCE
+                .child(uniqueUserId)
+                .removeValue();
+    }
+
     public static List<String> getFaveChannelsList() {
-        DatabaseReference reference = FIREBASE_FAVES_REFERENCE.child(mUniqueUserId);
+        DatabaseReference reference = FIREBASE_FAVES_REFERENCE.child(sUniqueUserId);
 
         final List<String> faveList = new ArrayList<>();
         reference.addValueEventListener(new ValueEventListener() {
@@ -138,24 +144,5 @@ public class FirebaseHelper {
             }
         });
         return faveList;
-    }
-
-    public static void deleteFromFave(String channelName) {
-        FIREBASE_FAVES_REFERENCE
-                .child(mUniqueUserId)
-                .child(channelName)
-                .removeValue();
-    }
-
-    public static void addUser(String uniqueUserId, User user) {
-        FIREBASE_USER_REVERENCE
-                .child(uniqueUserId)
-                .setValue(user);
-    }
-
-    public static void deleteUser(String uniqueUserId) {
-        FIREBASE_USER_REVERENCE
-                .child(uniqueUserId)
-                .removeValue();
     }
 }

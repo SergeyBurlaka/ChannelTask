@@ -9,9 +9,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.example.kostya.channeltask.FirebaseHelper;
 import com.example.kostya.channeltask.R;
@@ -28,8 +31,8 @@ public class AccelerometerTaskActivity extends AppCompatActivity {
     private SensorManager mSensorManager;
     private Sensor mAccelerometerSensor;
     private Spinner mSensorDelaySpinner;
-    private int mSensorDelayMS = 2000;
     private CountDownTimer mSensorUpdateTimer;
+    private int mSensorDelayMS = 1000;
     private int mSessionId;
 
 
@@ -41,7 +44,9 @@ public class AccelerometerTaskActivity extends AppCompatActivity {
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mAccelerometerSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         mSensorDelaySpinner = (Spinner) findViewById(R.id.sensor_update_time_spinner);
+        EditText serviceDurationInput = (EditText) findViewById(R.id.service_duration_edit_text);
 
+        setEditorActionListener(serviceDurationInput);
         spinnerSelectedItemClickListener();
         replaceFragment(new ShowAccelerometerDataFragment());
     }
@@ -49,16 +54,16 @@ public class AccelerometerTaskActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        mSensorManager.unregisterListener(mSensorEventListener);
+        unregisterSensor();
     }
 
     public void onClickStartAccSensor(View view) {
-        mSensorManager.registerListener(mSensorEventListener, mAccelerometerSensor
-                , SensorManager.SENSOR_DELAY_NORMAL);
+        registerSensor();
     }
 
+
     public void onClickStopAccSensor(View view) {
-        mSensorManager.unregisterListener(mSensorEventListener);
+        unregisterSensor();
         if (mSensorUpdateTimer != null)
             mSensorUpdateTimer.cancel();
         mSensorUpdateTimer = null;
@@ -81,6 +86,22 @@ public class AccelerometerTaskActivity extends AppCompatActivity {
                 .replace(R.id.accelerometer_fragment_container,
                         fragment)
                 .commit();
+    }
+
+    private void setEditorActionListener(EditText serviceDurationInput) {
+        serviceDurationInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (!textView.getText().toString().equals("")) {
+                    int durationInSec = Integer.parseInt(textView.getText().toString()) * 60000;
+                    setServiceDuration(durationInSec);
+                    registerSensor();
+                } else {
+                    unregisterSensor();
+                }
+                return false;
+            }
+        });
     }
 
     private SensorEventListener mSensorEventListener = new SensorEventListener() {
@@ -113,8 +134,8 @@ public class AccelerometerTaskActivity extends AppCompatActivity {
     }
 
     private void updateSensorDuration(String time) {
-        String seconds = time.replaceAll("[^0-9]", "");
-        mSensorDelayMS = Integer.parseInt(seconds) * 1000;
+        String msec = time.replaceAll("[^0-9]", "");
+        mSensorDelayMS = Integer.parseInt(msec) * 1000;
     }
 
     private void setSensorDelayTime(final float[] values) {
@@ -133,6 +154,20 @@ public class AccelerometerTaskActivity extends AppCompatActivity {
         mSensorUpdateTimer.start();
     }
 
+    private void setServiceDuration(int duration) {
+        CountDownTimer serviceDurationTimer = new CountDownTimer(duration, 1000) {
+            @Override
+            public void onTick(long l) {
+            }
+
+            @Override
+            public void onFinish() {
+                unregisterSensor();
+            }
+        };
+        serviceDurationTimer.start();
+    }
+
     private void uploadAccelerometerDataToFirebase(float[] values) {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
@@ -141,5 +176,14 @@ public class AccelerometerTaskActivity extends AppCompatActivity {
         FirebaseHelper.uploadAccelerometerData(data, mSessionId);
         FirebaseHelper.uploadAccelerometerAllSessionsData(data);
         PrefManager.getPrefManager().setSessionNumber(mSessionId, AccelerometerTaskActivity.this);
+    }
+
+    private void registerSensor() {
+        mSensorManager.registerListener(mSensorEventListener, mAccelerometerSensor
+                , SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    private void unregisterSensor() {
+        mSensorManager.unregisterListener(mSensorEventListener);
     }
 }

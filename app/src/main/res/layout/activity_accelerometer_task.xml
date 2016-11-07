@@ -52,15 +52,25 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/show_acc_fragment_button"
             android:onClick="onClickShowAccelerometerGraphFragment"
-            android:text="Schedule"/>
+            android:text="GRAPH"/>
 
         <Spinner
-            android:layout_below="@id/show_acc_fragment_button"
             android:id="@+id/sensor_update_time_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:entries="@array/sensor_delay_time"/>
+            android:layout_below="@id/show_acc_fragment_button"
+            android:entries="@array/sensor_delay_time"
+            android:layout_alignBottom="@+id/service_duration_edit_text"/>
 
+        <EditText
+            android:layout_toRightOf="@id/sensor_update_time_spinner"
+            android:id="@+id/service_duration_edit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Service duration"
+            android:layout_below="@id/start_service"
+            android:inputType="number"
+            android:maxLength="1"/>
 
     </RelativeLayout>
 

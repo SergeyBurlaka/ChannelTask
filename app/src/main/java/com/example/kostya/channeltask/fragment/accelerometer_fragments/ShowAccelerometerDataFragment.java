@@ -16,7 +16,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 
 public class ShowAccelerometerDataFragment extends Fragment {
-    //TODO:need to update the time or save it. On other PC this will not be 04/11/2016
+
     private static final String TODAYS_DATE = "04/11/2016";
 
     @Override

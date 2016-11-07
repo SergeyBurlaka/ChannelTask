@@ -40,9 +40,4 @@ public class AccelerometerDataHolder extends RecyclerView.ViewHolder {
         TextView dateTextView = (TextView) mView.findViewById(R.id.acc_date);
         dateTextView.setText(date);
     }
-
-    private String  countDate(long date) {
-        Date expire = new Date(date);
-        return expire.toString();
-    }
 }
