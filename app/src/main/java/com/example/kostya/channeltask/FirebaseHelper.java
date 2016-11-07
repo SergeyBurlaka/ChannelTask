@@ -76,7 +76,7 @@ public class FirebaseHelper {
                 .child(sessionName);
     }
 
-    public static void uploadAccelerometerAllSessionsData(Session data) {
+    public static void uploadAccelerometerSessionData(Session data) {
         FIREBASE_ACCELEROMETER_ALL_SESSIONS
                 .child(sUniqueUserId)
                 .push()

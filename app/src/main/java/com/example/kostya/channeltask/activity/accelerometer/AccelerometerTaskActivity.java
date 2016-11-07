@@ -23,7 +23,6 @@ import android.widget.TextView;
 import com.example.kostya.channeltask.FirebaseHelper;
 import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.activity.ChooserActivity;
-import com.example.kostya.channeltask.fragment.accelerometer_fragments.AccelerometerDataFragment;
 import com.example.kostya.channeltask.fragment.accelerometer_fragments.AccelerometerSessionFragment;
 import com.example.kostya.channeltask.model.acc_model.AccelerometerData;
 import com.example.kostya.channeltask.model.acc_model.Session;
@@ -36,7 +35,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class AccelerometerTaskActivity extends AppCompatActivity implements  AccelerometerSessionFragment.OnSessionClickListener {
+public class AccelerometerTaskActivity extends AppCompatActivity implements AccelerometerSessionFragment.OnSessionClickListener {
     private SensorManager mSensorManager;
     private Sensor mAccelerometerSensor;
     private Spinner mSensorDelaySpinner;
@@ -70,11 +69,9 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements  Acc
     }
 
     public void onClickStartAccSensor(View view) {
-        Session data = new Session("session" + mSessionId + " " + mSessionStartDate);
-        FirebaseHelper.uploadAccelerometerAllSessionsData(data);
+        addSessionToFirebase();
         registerSensor();
     }
-
 
     public void onClickStopAccSensor(View view) {
         unregisterSensor();
@@ -93,9 +90,15 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements  Acc
             case R.id.action_logout:
                 logout();
                 break;
-
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSessionClick(String sessionName) {
+        Intent intent = new Intent(AccelerometerTaskActivity.this, SessionActivity.class);
+        intent.putExtra(SessionActivity.ARG_SESSION_NAME, sessionName);
+        startActivity(intent);
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -112,6 +115,7 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements  Acc
             if (!textView.getText().toString().equals("")) {
                 int durationInSec = Integer.parseInt(textView.getText().toString()) * 60000;
                 setSensorUpdateDuration(durationInSec);
+                addSessionToFirebase();
                 registerSensor();
             } else {
                 unregisterSensor();
@@ -185,6 +189,11 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements  Acc
         updateDuration.start();
     }
 
+    private void addSessionToFirebase() {
+        Session data = new Session("session" + mSessionId + " " + mSessionStartDate);
+        FirebaseHelper.uploadAccelerometerSessionData(data);
+    }
+
     private void uploadAccelerometerDataToFirebase(float[] values) {
         DateFormat dateFormat = new SimpleDateFormat("dd:MM:yyy HH:mm:ss");
         Date date = new Date();
@@ -235,12 +244,5 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements  Acc
                         }
                     }
                 });
-    }
-
-    @Override
-    public void onSessionClick(String sessionName) {
-        Intent intent = new Intent(AccelerometerTaskActivity.this, SessionActivity.class);
-        intent.putExtra(SessionActivity.ARG_SESSION_NAME, sessionName);
-        startActivity(intent);
     }
 }

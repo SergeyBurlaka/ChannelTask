@@ -20,7 +20,6 @@ import com.google.firebase.database.DatabaseReference;
 
 public class AccelerometerSessionFragment extends Fragment {
 
-    private static final String TODAYS_DATE = "04:11:2016";
     private static final String TAG = AccelerometerSessionFragment.class.getSimpleName();
     private OnSessionClickListener mOnSessionClickListener;
     
