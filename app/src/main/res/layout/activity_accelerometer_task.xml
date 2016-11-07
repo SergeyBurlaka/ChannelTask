@@ -13,14 +13,16 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:focusable="true"
         android:layout_centerInParent="true"
+        android:background="@android:color/darker_gray"
+        android:focusable="true"
         android:focusableInTouchMode="true">
 
         <Button
             android:id="@+id/start_service"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/service_duration_edit_text"
             android:onClick="onClickStartAccSensor"
             android:text="Start"/>
 
@@ -28,7 +30,7 @@
             android:id="@+id/stop_service"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/start_service"
+            android:layout_toRightOf="@+id/service_duration_edit_text"
             android:onClick="onClickStopAccSensor"
             android:text="Stop"/>
 
@@ -36,16 +38,17 @@
             android:id="@+id/sensor_update_time_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/service_duration_edit_text"
-            android:layout_below="@id/start_service"
+            android:layout_below="@id/service_duration_edit_text"
+            android:layout_centerHorizontal="true"
             android:entries="@array/sensor_delay_time"/>
 
         <EditText
             android:id="@+id/service_duration_edit_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_below="@id/start_service"
-            android:layout_toRightOf="@id/sensor_update_time_spinner"
+            android:layout_centerHorizontal="true"
             android:hint="Service duration"
             android:inputType="number"
             android:maxLength="1"/>
@@ -56,10 +59,10 @@
         android:id="@+id/accelerometer_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/service_controlTab"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/service_controlTab">
 
     </FrameLayout>
 

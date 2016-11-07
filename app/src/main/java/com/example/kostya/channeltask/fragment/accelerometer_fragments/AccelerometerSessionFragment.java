@@ -60,11 +60,9 @@ public class AccelerometerSessionFragment extends Fragment {
 
     private void initAccelerometerDataList(RecyclerView recyclerView) {
         DatabaseReference reference = FirebaseHelper.getDataFromAllAccelerometerSessions();
-        int sessionId = PrefManager.getPrefManager().getLastSessionNumber(getContext());
-
         FirebaseRecyclerAdapter firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Session, SessionHolder>(Session.class,
                 R.layout.fragment_accelerometer_item, SessionHolder.class,
-                reference.orderByChild("date").startAt("session0").endAt("session" + sessionId)) {
+                reference.orderByChild("date").startAt("session")) {
             @Override
             protected void populateViewHolder(SessionHolder sessionHolder, Session session, int position) {
                 sessionHolder.setDate(session.getDate());

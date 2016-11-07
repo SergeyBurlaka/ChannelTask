@@ -29,7 +29,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return AccelerometerDataFragment.newInstance(mSessionName);
             case 1:
-                return new AccelerometerGraphFragment();
+                return AccelerometerGraphFragment.newInstance(mSessionName);
         }
         return null;
     }

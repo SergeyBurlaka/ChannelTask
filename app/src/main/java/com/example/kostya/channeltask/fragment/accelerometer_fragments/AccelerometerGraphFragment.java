@@ -1,6 +1,7 @@
 package com.example.kostya.channeltask.fragment.accelerometer_fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +27,27 @@ import java.util.List;
  */
 
 public class AccelerometerGraphFragment extends Fragment {
+    private static final String ARG_SESSION_NAME = "ARG_SESSION_NAME";
     private List<AccelerometerData> mAccelerometerDataList;
+    private String mSessionName;
     private GraphView mAccelerometerGraph;
+
+    public static AccelerometerGraphFragment newInstance(String sessionName) {
+        AccelerometerGraphFragment fragment = new AccelerometerGraphFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_SESSION_NAME, sessionName);
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(getArguments() != null) {
+            mSessionName = getArguments().getString(ARG_SESSION_NAME);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container, Bundle savedInstanceState) {
@@ -38,9 +58,7 @@ public class AccelerometerGraphFragment extends Fragment {
     }
 
     private void getAxis() {
-        int sessionId = PrefManager.getPrefManager().getLastSessionNumber(getContext());
-        DatabaseReference reference = FirebaseHelper.getAccelerometerDataForUser(sessionId - 1);
-
+        DatabaseReference reference = FirebaseHelper.getAccelerometerDataForUser(mSessionName);
         reference.orderByChild("x").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

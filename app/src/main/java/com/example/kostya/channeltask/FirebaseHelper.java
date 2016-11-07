@@ -69,11 +69,11 @@ public class FirebaseHelper {
         return FIREBASE_FAVES_REFERENCE.child(sUniqueUserId);
     }
 
-    public static DatabaseReference getAccelerometerDataForUser(int sessionId) {
+    public static DatabaseReference getAccelerometerDataForUser(String sessionName) {
 
         return FIREBASE_ACCELEROMETER_REFERENCE
                 .child(sUniqueUserId)
-                .child("session" + sessionId);
+                .child(sessionName);
     }
 
     public static void uploadAccelerometerAllSessionsData(Session data) {
