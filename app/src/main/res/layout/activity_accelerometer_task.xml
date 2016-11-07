@@ -16,6 +16,8 @@
     </FrameLayout>
 
     <RelativeLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:id="@+id/service_controlTab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

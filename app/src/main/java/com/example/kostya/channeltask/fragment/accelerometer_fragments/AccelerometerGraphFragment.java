@@ -40,7 +40,7 @@ public class AccelerometerGraphFragment extends Fragment {
 
     private void getAxis() {
         int sessionId = PrefManager.getPrefManager().getLastSessionNumber(getContext());
-        DatabaseReference reference = FirebaseHelper.getAccelerometerDataForUser(sessionId);
+        DatabaseReference reference = FirebaseHelper.getAccelerometerDataForUser(sessionId - 1);
 
         reference.orderByChild("x").addValueEventListener(new ValueEventListener() {
             @Override
