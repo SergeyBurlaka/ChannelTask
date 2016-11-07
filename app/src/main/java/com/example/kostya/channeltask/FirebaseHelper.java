@@ -94,10 +94,10 @@ public class FirebaseHelper {
                 .child(sessionName);
     }
 
-    public static void uploadAccelerometerData(AccelerometerData data, int sessionId, String sessionStartDate) {
+    public static void uploadAccelerometerData(AccelerometerData data, String sessionStartDate) {
         FIREBASE_ACCELEROMETER_REFERENCE
                 .child(sUniqueUserId)
-                .child("session" + sessionId + " " + sessionStartDate)
+                .child("session" + " " + sessionStartDate)
                 .push()
                 .setValue(data);
     }

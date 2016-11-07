@@ -26,6 +26,12 @@
         </activity>
         <activity android:name=".activity.accelerometer.SessionActivity">
         </activity>
+
+        <service
+            android:name=".activity.service.FirebaseUploadService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
     </application>
 
 </manifest>
