@@ -1,6 +1,9 @@
 package com.example.kostya.channeltask;
 
-import com.example.kostya.channeltask.model.Channel;
+import android.content.Context;
+
+import com.example.kostya.channeltask.model.channel_model.Channel;
+import com.example.kostya.channeltask.model.User;
 import com.example.kostya.channeltask.model.acc_model.AccelerometerData;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -8,10 +11,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,6 +19,7 @@ import java.util.List;
  */
 
 public class FirebaseHelper {
+    private static String mUniqueUserId;
 
     private static final DatabaseReference FIREBASE_REFERENCE = FirebaseDatabase.getInstance().getReference();
 
@@ -65,7 +66,7 @@ public class FirebaseHelper {
         return FIREBASE_CHANNEL_REFERENCE;
     }
 
-    public static DatabaseReference getUserReference() {
+    public static DatabaseReference getUserReference(Context context) {
         return FIREBASE_USER_REVERENCE;
     }
 
@@ -81,44 +82,44 @@ public class FirebaseHelper {
         return FIREBASE_ACCELEROMETER_ALL_SESSIONS;
     }
 
-    public static DatabaseReference getAccelerometerDataForUser(String uniqueUserId, int sessionId) {
+    public static DatabaseReference getAccelerometerDataForUser(int sessionId) {
 
         return FIREBASE_ACCELEROMETER_REFERENCE
-                .child(uniqueUserId)
+                .child(mUniqueUserId)
                 .child("session" + sessionId);
     }
 
-    public static void uploadAccelerometerAllSessionsData(String uniqueUserId, AccelerometerData data) {
+    public static void uploadAccelerometerAllSessionsData(AccelerometerData data) {
         FIREBASE_ACCELEROMETER_ALL_SESSIONS
-                .child(uniqueUserId)
+                .child(mUniqueUserId)
                 .push()
                 .setValue(data);
     }
 
-    public static DatabaseReference getDataFromAllAccelerometerSessions(String uniqueUserId) {
+    public static DatabaseReference getDataFromAllAccelerometerSessions() {
         return FIREBASE_ACCELEROMETER_ALL_SESSIONS
-                .child(uniqueUserId);
+                .child(mUniqueUserId);
     }
 
-    public static void uploadAccelerometerData(String uniqueUserId, AccelerometerData data, int sessionId) {
+    public static void uploadAccelerometerData(AccelerometerData data, int sessionId) {
         FIREBASE_ACCELEROMETER_REFERENCE
-                .child(uniqueUserId)
+                .child(mUniqueUserId)
                 .child("session" + sessionId)
                 .push()
                 .setValue(data);
     }
 
-    public static void addToFave(String uniqueUserId, String showId) {
+    public static void addToFave(String showId) {
         Channel channel = new Channel(showId);
 
         FIREBASE_FAVES_REFERENCE
-                .child(uniqueUserId)
+                .child(mUniqueUserId)
                 .child(showId)
                 .setValue(channel);
     }
 
-    public static List<String> getFaveChannelsList(String uniqueUserId) {
-        DatabaseReference reference = FIREBASE_FAVES_REFERENCE.child(uniqueUserId);
+    public static List<String> getFaveChannelsList() {
+        DatabaseReference reference = FIREBASE_FAVES_REFERENCE.child(mUniqueUserId);
 
         final List<String> faveList = new ArrayList<>();
         reference.addValueEventListener(new ValueEventListener() {
@@ -139,11 +140,17 @@ public class FirebaseHelper {
         return faveList;
     }
 
-    public static void deleteFromFave(String channelName, String uniqueUserId) {
+    public static void deleteFromFave(String channelName) {
         FIREBASE_FAVES_REFERENCE
-                .child(uniqueUserId)
+                .child(mUniqueUserId)
                 .child(channelName)
                 .removeValue();
+    }
+
+    public static void addUser(String uniqueUserId, User user) {
+        FIREBASE_USER_REVERENCE
+                .child(uniqueUserId)
+                .setValue(user);
     }
 
     public static void deleteUser(String uniqueUserId) {

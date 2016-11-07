@@ -1,4 +1,4 @@
-package com.example.kostya.channeltask.fragment;
+package com.example.kostya.channeltask.fragment.channel_fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import com.example.kostya.channeltask.FirebaseHelper;
 import com.example.kostya.channeltask.prefs.PrefManager;
 import com.example.kostya.channeltask.R;
-import com.example.kostya.channeltask.holder.ChannelHolder;
-import com.example.kostya.channeltask.model.Channel;
+import com.example.kostya.channeltask.holder.channel_holder.ChannelHolder;
+import com.example.kostya.channeltask.model.channel_model.Channel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 
@@ -82,8 +82,7 @@ public class FaveChannelListFragment extends Fragment {
     private void deleteItem(RecyclerView.ViewHolder viewHolder) {
         int position = viewHolder.getAdapterPosition();
         String name = mFaveChannelMap.get(position);
-        String uniqueId = PrefManager.getPrefManager().getUniqueUser(getContext());
-        FirebaseHelper.deleteFromFave(name, uniqueId);
+        FirebaseHelper.deleteFromFave(name);
 
         initFaveList();
     }

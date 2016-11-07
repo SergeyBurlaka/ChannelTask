@@ -40,11 +40,8 @@ public class AccelerometerGraphFragment extends Fragment {
     }
 
     private void getAxis() {
-        String uniqueId = PrefManager.getPrefManager().getUniqueUser(getContext());
         int sessionId = PrefManager.getPrefManager().getLastSessionNumber(getContext());
-
-        DatabaseReference reference = FirebaseHelper.getAccelerometerDataForUser(uniqueId, sessionId);
-
+        DatabaseReference reference = FirebaseHelper.getAccelerometerDataForUser(sessionId);
 
         reference.orderByChild("x").addValueEventListener(new ValueEventListener() {
             @Override

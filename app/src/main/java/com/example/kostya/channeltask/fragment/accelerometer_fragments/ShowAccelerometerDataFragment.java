@@ -1,7 +1,5 @@
 package com.example.kostya.channeltask.fragment.accelerometer_fragments;
 
-import android.content.Context;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,15 +12,11 @@ import com.example.kostya.channeltask.FirebaseHelper;
 import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.holder.acc_holders.AccelerometerDataHolder;
 import com.example.kostya.channeltask.model.acc_model.AccelerometerData;
-import com.example.kostya.channeltask.prefs.PrefManager;
-import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
-
 public class ShowAccelerometerDataFragment extends Fragment {
+    //TODO:need to update the time or save it. On other PC this will not be 04/11/2016
     private static final String TODAYS_DATE = "04/11/2016";
 
     @Override
@@ -45,10 +39,7 @@ public class ShowAccelerometerDataFragment extends Fragment {
     }
 
     private void initAccelerometerDataList(RecyclerView recyclerView) {
-
-        String uniqueUser = PrefManager.getPrefManager().getUniqueUser(getContext());
-
-        DatabaseReference reference = FirebaseHelper.getDataFromAllAccelerometerSessions(uniqueUser);
+        DatabaseReference reference = FirebaseHelper.getDataFromAllAccelerometerSessions();
 
         FirebaseRecyclerAdapter firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<AccelerometerData, AccelerometerDataHolder>(AccelerometerData.class,
                 R.layout.fragment_accelerometer_item, AccelerometerDataHolder.class,
