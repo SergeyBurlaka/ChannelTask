@@ -59,6 +59,7 @@ public class AccelerometerGraphFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_accelerometer_graph, container, false);
         mAccelerometerGraph = (GraphView) view.findViewById(R.id.accelerometer_graph);
+//        mAccelerometerGraph.getViewport().setScrollable(true);
         getAxis();
         return view;
     }
@@ -104,7 +105,9 @@ public class AccelerometerGraphFragment extends Fragment {
     private void initXAxisLabel() {
         GridLabelRenderer labelRenderer = mAccelerometerGraph.getGridLabelRenderer();
         labelRenderer.setLabelFormatter(new DateAsXAxisLabelFormatter(getActivity(), new SimpleDateFormat("HH:mm:ss")));
-        labelRenderer.setNumHorizontalLabels(4);
+
+//        labelRenderer.setNumHorizontalLabels(4);
+
     }
 
     private Date getDate(String date) {
@@ -119,6 +122,10 @@ public class AccelerometerGraphFragment extends Fragment {
     }
 
     private void addSeries(LineGraphSeries<DataPoint> xSeries, LineGraphSeries<DataPoint> ySeries, LineGraphSeries<DataPoint> zSeries) {
+        mAccelerometerGraph.refreshDrawableState();
+        if (mAccelerometerGraph.getSeries() != null) {
+            mAccelerometerGraph.removeAllSeries();
+        }
         mAccelerometerGraph.addSeries(xSeries);
         mAccelerometerGraph.addSeries(ySeries);
         mAccelerometerGraph.addSeries(zSeries);

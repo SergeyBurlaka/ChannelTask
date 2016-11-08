@@ -1,6 +1,10 @@
 package com.example.kostya.channeltask.activity.service;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -9,27 +13,33 @@ import android.hardware.SensorManager;
 import android.os.Binder;
 import android.os.CountDownTimer;
 import android.os.IBinder;
-import android.widget.Spinner;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.example.kostya.channeltask.FirebaseHelper;
 import com.example.kostya.channeltask.activity.accelerometer.AccelerometerTaskActivity;
 import com.example.kostya.channeltask.model.acc_model.AccelerometerData;
 import com.example.kostya.channeltask.model.acc_model.Session;
-import com.example.kostya.channeltask.prefs.PrefManager;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 public class FirebaseUploadService extends Service {
+    public static final String ACTION_START_UPLOAD = "ACTION_START_UPLOAD";
+    public static final String ACTION_STOP_UPLOAD = "ACTION_STOP_UPLOAD";
+    public static final String ACTION_SHOW_NOTIFICATION = "ACTION_SHOW_NOTIFICATION";
+
+
+    private static final int NOTIFICATION_ID = 1;
+    private static final String TAG = FirebaseUploadService.class.getSimpleName();
     private SensorManager mSensorManager;
     private Sensor mAccelerometerSensor;
     private CountDownTimer mSensorUpdateTimer;
     private int mSensorDelayMS = 1000;
     private String mSessionStartDate = getSessionStartDate();
     private IBinder mIBinder = new FirebaseUploadServiceBinder();
-    public static final String ACTION_START_UPLOAD = "ACTION_START_UPLOAD";
-    public static  final String ACTION_STOP_UPLOAD = "ACTION_STOP_UPLOAD";
 
     public FirebaseUploadService() {
     }
@@ -48,35 +58,45 @@ public class FirebaseUploadService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(intent != null && intent.getAction() != null) {
+        super.onStartCommand(intent, flags, startId);
+
+        if (intent != null && intent.getAction() != null) {
             switch (intent.getAction()) {
                 case ACTION_START_UPLOAD:
-                    registerSensor();
+//                    registerSensor();
                     break;
                 case ACTION_STOP_UPLOAD:
                     unregisterSensor();
+                    stopSelf();
                     break;
+//                case ACTION_SHOW_NOTIFICATION:
+//                    setNotification();
+//                    break;
             }
         }
-
-        return super.onStartCommand(intent, flags, startId);
-
+        return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
+        Log.d(TAG, "Service stopped");
+        unregisterSensor();
         super.onDestroy();
     }
 
     //============================================= Interaction with Service=======================================
     public void startAccSensor() {
         addSessionToFirebase();
+        setNotification();
         registerSensor();
     }
 
     public void stopAccSensor() {
         unregisterSensor();
         cancelSensorUpdateTimer();
+//        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+//        notificationManager.cancelAll();
+        stopSelf();
     }
 
     public void setSensorDelayMS(int ms) {
@@ -173,6 +193,28 @@ public class FirebaseUploadService extends Service {
 
     private void unregisterSensor() {
         mSensorManager.unregisterListener(mSensorEventListener);
+    }
+
+    public void setNotification() {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(android.R.drawable.sym_def_app_icon)
+                .setContentTitle("Service is working")
+                .setContentText("Uploading data");
+
+        Intent intent = new Intent(this, AccelerometerTaskActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+//        Random gerenator = new Random();
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis() / 1000,
+                intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        mBuilder.setContentIntent(pendingIntent);
+
+        Notification notification = mBuilder.build();
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
+        notificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+        startForeground(NOTIFICATION_ID, notification);
     }
 
 }

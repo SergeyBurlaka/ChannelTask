@@ -41,6 +41,7 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
     private Spinner mSensorDelaySpinner;
     private FirebaseUploadService mFirebaseUploadService;
     private boolean mIsBound;
+    private boolean mIsStarted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,22 +52,28 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
         EditText serviceDurationInput = (EditText) findViewById(R.id.service_duration_edit_text);
         serviceDurationInput.setOnEditorActionListener(mOnEditorActionListener);
 
-//        startService();
+        startService(FirebaseUploadService.ACTION_START_UPLOAD);
         onBindService();
-
         spinnerSelectedItemClickListener();
         replaceFragment(new AccelerometerSessionFragment());
 
     }
 
     public void onClickStartAccSensor(View view) {
-        startService(FirebaseUploadService.ACTION_START_UPLOAD);
+//        onBindService();
+//        startService(FirebaseUploadService.ACTION_START_UPLOAD);
         mFirebaseUploadService.startAccSensor();
+//        mIsStarted = true;
+//        PrefManager.getPrefManager().setIsSessionStarted(mIsStarted, AccelerometerTaskActivity.this);
     }
 
     public void onClickStopAccSensor(View view) {
-        stopService();
         mFirebaseUploadService.stopAccSensor();
+//        stopService();
+//        mIsStarted = false;
+//        PrefManager.getPrefManager().setIsSessionStarted(mIsStarted, AccelerometerTaskActivity.this);
+//        stopService();
+//        unBindService();
     }
 
     @Override
@@ -94,8 +101,19 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
 
     @Override
     protected void onDestroy() {
-        unBindService();
+//        unBindService();
+//        mIsStarted = PrefManager.getPrefManager().getIsSessionStarted(AccelerometerTaskActivity.this);
+//        if (mIsStarted) {
+//            startService(FirebaseUploadService.ACTION_SHOW_NOTIFICATION);
+//        }
+//        if(mIsStarted)
+//            mFirebaseUploadService.setNotification();
         super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -136,13 +154,16 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
             if (!textView.getText().toString().equals("")) {
                 int durationInSec = Integer.parseInt(textView.getText().toString()) * 60000;
+
                 mFirebaseUploadService.setServiceUpdateDuration(durationInSec);
+                mFirebaseUploadService.startAccSensor();
 
 //                setServiceUpdateDuration(durationInSec);
 //                addSessionToFirebase();
 //                registerSensor();
             } else {
 //                unregisterSensor();
+                mFirebaseUploadService.stopAccSensor();
             }
             return false;
         }
@@ -158,7 +179,7 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
+//                stopService();
             }
         });
     }
@@ -169,21 +190,6 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
         if (mFirebaseUploadService != null)
             mFirebaseUploadService.setSensorDelayMS(secs);
     }
-
-//    private void setServiceUpdateDuration(int duration) {
-//        CountDownTimer updateDuration = new CountDownTimer(duration, 1000) {
-//            @Override
-//            public void onTick(long l) {
-//            }
-//
-//            @Override
-//            public void onFinish() {
-////                unregisterSensor();
-//                stopService();
-//            }
-//        };
-//        updateDuration.start();
-//    }
 
     private void startService(String action) {
 
