@@ -56,13 +56,6 @@ public class FirebaseUploadService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-//    @Override
-//    public void onDestroy() {
-//        Log.d(TAG, "Service stopped");
-//        unregisterSensor();
-//        super.onDestroy();
-//    }
-
     //============================================= Interaction with Service=======================================
     public void startAccSensor() {
         boolean isRunning = PrefManager.getPrefManager().getIsSessionStarted(FirebaseUploadService.this);

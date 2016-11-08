@@ -52,13 +52,12 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
     public void onClickStartAccSensor(View view) {
         startService();
         mFirebaseUploadService.startAccSensor();
-        PrefManager.getPrefManager().setIsSessionStarted(true, AccelerometerTaskActivity.this);
+        setIsRunning(true);
     }
 
     public void onClickStopAccSensor(View view) {
         mFirebaseUploadService.stopAccSensor();
         setIsRunning(false);
-
     }
 
     @Override
@@ -82,16 +81,6 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
         Intent intent = new Intent(AccelerometerTaskActivity.this, SessionActivity.class);
         intent.putExtra(SessionActivity.ARG_SESSION_NAME, sessionName);
         startActivity(intent);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -135,10 +124,6 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
         }
     };
 
-    private void setIsRunning(boolean isRunning) {
-        PrefManager.getPrefManager().setIsSessionStarted(isRunning, AccelerometerTaskActivity.this);
-    }
-
     private void spinnerSelectedItemClickListener() {
         mSensorDelaySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -165,6 +150,9 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
                 FirebaseUploadService.class));
     }
 
+    private void setIsRunning(boolean isRunning) {
+        PrefManager.getPrefManager().setIsSessionStarted(isRunning, AccelerometerTaskActivity.this);
+    }
 
     private void logout() {
         boolean isRunning = PrefManager.getPrefManager().getIsSessionStarted(AccelerometerTaskActivity.this);

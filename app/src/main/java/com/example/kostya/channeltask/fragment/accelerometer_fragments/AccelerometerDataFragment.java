@@ -17,8 +17,6 @@ import com.google.firebase.database.DatabaseReference;
 
 public class AccelerometerDataFragment extends Fragment {
     private static final String ARG_SESSION_NAME = "ARG_SESSION_NAME";
-    private static final String START_DATE = "04/11/2016";
-
     private String mSessionName;
 
     public static AccelerometerDataFragment newInstance(String sessionName) {
@@ -52,7 +50,7 @@ public class AccelerometerDataFragment extends Fragment {
 
         FirebaseRecyclerAdapter firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<AccelerometerData, AccelerometerDataHolder>(AccelerometerData.class,
                 R.layout.fragment_accelerometer_item, AccelerometerDataHolder.class,
-                reference.orderByChild("date").startAt(START_DATE)) {
+                reference.orderByChild("date")) {
 
             @Override
             protected void populateViewHolder(AccelerometerDataHolder accelerometerDataHolder, AccelerometerData accelerometerData, int position) {

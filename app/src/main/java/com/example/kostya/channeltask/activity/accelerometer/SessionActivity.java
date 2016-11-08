@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.adapter.ViewPagerAdapter;
+import com.google.firebase.crash.FirebaseCrash;
 
 public class SessionActivity extends AppCompatActivity {
     public static final String ARG_SESSION_NAME = "ARG_SESSION_NAME";
@@ -15,6 +16,8 @@ public class SessionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_session);
+
+//        FirebaseCrash.report(new Exception("Non-fatal error. Session activity created"));
 
         Bundle extra = getIntent().getExtras();
         if(extra != null) {

@@ -19,14 +19,9 @@ import com.google.firebase.database.DatabaseReference;
 public class AccelerometerSessionFragment extends Fragment {
 
     private OnAccelerometerSessionFragmentInteractions mOnAccelerometerSessionFragmentInteractions;
+
     public interface OnAccelerometerSessionFragmentInteractions {
         void onSessionClick(String sessionName);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
     }
 
     @Override
