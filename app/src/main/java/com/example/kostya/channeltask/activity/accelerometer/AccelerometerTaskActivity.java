@@ -52,7 +52,7 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
         EditText serviceDurationInput = (EditText) findViewById(R.id.service_duration_edit_text);
         serviceDurationInput.setOnEditorActionListener(mOnEditorActionListener);
 
-        startService(FirebaseUploadService.ACTION_START_UPLOAD);
+        startService();
         onBindService();
         spinnerSelectedItemClickListener();
         replaceFragment(new AccelerometerSessionFragment());
@@ -61,7 +61,7 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
 
     public void onClickStartAccSensor(View view) {
 //        onBindService();
-//        startService(FirebaseUploadService.ACTION_START_UPLOAD);
+        startService();
         mFirebaseUploadService.startAccSensor();
 //        mIsStarted = true;
 //        PrefManager.getPrefManager().setIsSessionStarted(mIsStarted, AccelerometerTaskActivity.this);
@@ -191,17 +191,11 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
             mFirebaseUploadService.setSensorDelayMS(secs);
     }
 
-    private void startService(String action) {
-
-        Intent serviceIntent = new Intent(action);
-        serviceIntent.setClass(AccelerometerTaskActivity.this, FirebaseUploadService.class);
-        startService(serviceIntent);
+    private void startService() {
+        startService(new Intent(AccelerometerTaskActivity.this,
+                FirebaseUploadService.class));
     }
 
-    private void stopService() {
-        Intent intent = new Intent(AccelerometerTaskActivity.this, FirebaseUploadService.class);
-        stopService(intent);
-    }
 
 
     private void logout() {

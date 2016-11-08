@@ -65,10 +65,10 @@ public class FirebaseUploadService extends Service {
                 case ACTION_START_UPLOAD:
 //                    registerSensor();
                     break;
-                case ACTION_STOP_UPLOAD:
-                    unregisterSensor();
-                    stopSelf();
-                    break;
+//                case ACTION_STOP_UPLOAD:
+//                    unregisterSensor();
+//                    stopSelf();
+//                    break;
 //                case ACTION_SHOW_NOTIFICATION:
 //                    setNotification();
 //                    break;
