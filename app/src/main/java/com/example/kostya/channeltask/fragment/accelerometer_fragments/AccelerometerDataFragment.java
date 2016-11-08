@@ -1,7 +1,5 @@
 package com.example.kostya.channeltask.fragment.accelerometer_fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,7 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 
 public class AccelerometerDataFragment extends Fragment {
     private static final String ARG_SESSION_NAME = "ARG_SESSION_NAME";
-    private static final String TODAYS_DATE = "04/11/2016";
+    private static final String START_DATE = "04/11/2016";
 
     private String mSessionName;
 
@@ -55,7 +53,7 @@ public class AccelerometerDataFragment extends Fragment {
 
         FirebaseRecyclerAdapter firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<AccelerometerData, AccelerometerDataHolder>(AccelerometerData.class,
                 R.layout.fragment_accelerometer_item, AccelerometerDataHolder.class,
-                reference.orderByChild("date").startAt(TODAYS_DATE)) {
+                reference.orderByChild("date").startAt(START_DATE)) {
 
             @Override
             protected void populateViewHolder(AccelerometerDataHolder accelerometerDataHolder, AccelerometerData accelerometerData, int position) {

@@ -37,6 +37,9 @@ public class AccelerometerGraphFragment extends Fragment {
     private List<AccelerometerData> mAccelerometerDataList;
     private String mSessionName;
     private GraphView mAccelerometerGraph;
+    private LineGraphSeries<DataPoint> xSeries;
+    private LineGraphSeries<DataPoint> ySeries;
+    private LineGraphSeries<DataPoint> zSeries;
 
     public static AccelerometerGraphFragment newInstance(String sessionName) {
         AccelerometerGraphFragment fragment = new AccelerometerGraphFragment();
@@ -59,12 +62,11 @@ public class AccelerometerGraphFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_accelerometer_graph, container, false);
         mAccelerometerGraph = (GraphView) view.findViewById(R.id.accelerometer_graph);
-//        mAccelerometerGraph.getViewport().setScrollable(true);
-        getAxis();
+        initGraph();
         return view;
     }
 
-    private void getAxis() {
+    private void initGraph() {
         DatabaseReference reference = FirebaseHelper.getAccelerometerDataForUser(mSessionName);
         reference.orderByChild("date").addValueEventListener(new ValueEventListener() {
             @Override
@@ -74,7 +76,7 @@ public class AccelerometerGraphFragment extends Fragment {
                     AccelerometerData accelerometerData = data.getValue(AccelerometerData.class);
                     mAccelerometerDataList.add(accelerometerData);
                 }
-                initAxis();
+                buildGraph();
             }
 
             @Override
@@ -84,30 +86,22 @@ public class AccelerometerGraphFragment extends Fragment {
         });
     }
 
-    private void initAxis() {
-        LineGraphSeries<DataPoint> xSeries = new LineGraphSeries<>();
-        LineGraphSeries<DataPoint> ySeries = new LineGraphSeries<>();
-        LineGraphSeries<DataPoint> zSeries = new LineGraphSeries<>();
+    private void buildGraph() {
+        xSeries = new LineGraphSeries<>();
+        ySeries = new LineGraphSeries<>();
+        zSeries = new LineGraphSeries<>();
 
         for (int i = 0; i < mAccelerometerDataList.size(); i++) {
             float x = mAccelerometerDataList.get(i).getX();
             float y = mAccelerometerDataList.get(i).getY();
             float z = mAccelerometerDataList.get(i).getZ();
             String date = mAccelerometerDataList.get(i).getDate();
-
             Date sessionDate = getDate(date);
-            initSeriesStyle(xSeries, ySeries, zSeries, x, y, z, sessionDate);
+
+            appendSeriesData(x, y, z, sessionDate);
         }
-        addSeries(xSeries, ySeries, zSeries);
-        initXAxisLabel();
-    }
-
-    private void initXAxisLabel() {
-        GridLabelRenderer labelRenderer = mAccelerometerGraph.getGridLabelRenderer();
-        labelRenderer.setLabelFormatter(new DateAsXAxisLabelFormatter(getActivity(), new SimpleDateFormat("HH:mm:ss")));
-
-//        labelRenderer.setNumHorizontalLabels(4);
-
+        addSeries();
+        initTimeAxisLabel();
     }
 
     private Date getDate(String date) {
@@ -121,23 +115,14 @@ public class AccelerometerGraphFragment extends Fragment {
         return sessionDate;
     }
 
-    private void addSeries(LineGraphSeries<DataPoint> xSeries, LineGraphSeries<DataPoint> ySeries, LineGraphSeries<DataPoint> zSeries) {
-        mAccelerometerGraph.refreshDrawableState();
-        if (mAccelerometerGraph.getSeries() != null) {
-            mAccelerometerGraph.removeAllSeries();
-        }
-        mAccelerometerGraph.addSeries(xSeries);
-        mAccelerometerGraph.addSeries(ySeries);
-        mAccelerometerGraph.addSeries(zSeries);
-        mAccelerometerGraph.getLegendRenderer().setVisible(true);
-        mAccelerometerGraph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+    private void appendSeriesData(float x, float y, float z, Date sessionDate) {
+        zSeries.appendData(createDataPoint(sessionDate, z), true, mAccelerometerDataList.size());
+        ySeries.appendData(createDataPoint(sessionDate, y), true, mAccelerometerDataList.size());
+        xSeries.appendData(createDataPoint(sessionDate, x), true, mAccelerometerDataList.size());
+        seriesStyle();
     }
 
-    private void initSeriesStyle(LineGraphSeries<DataPoint> xSeries, LineGraphSeries<DataPoint> ySeries,
-                                 LineGraphSeries<DataPoint> zSeries, float x, float y, float z, Date sessionDate) {
-        zSeries.appendData(initDataPoint(sessionDate, z), true, mAccelerometerDataList.size());
-        ySeries.appendData(initDataPoint(sessionDate, y), true, mAccelerometerDataList.size());
-        xSeries.appendData(initDataPoint(sessionDate, x), true, mAccelerometerDataList.size());
+    private void seriesStyle() {
         xSeries.setColor(Color.RED);
         ySeries.setColor(Color.BLACK);
         zSeries.setColor(Color.BLUE);
@@ -147,7 +132,31 @@ public class AccelerometerGraphFragment extends Fragment {
         zSeries.setTitle("z");
     }
 
-    private DataPoint initDataPoint(Date date, float axis) {
+    private void addSeries() {
+        mAccelerometerGraph.refreshDrawableState();
+        if (mAccelerometerGraph.getSeries() != null) {
+            mAccelerometerGraph.removeAllSeries();
+        }
+        mAccelerometerGraph.addSeries(xSeries);
+        mAccelerometerGraph.addSeries(ySeries);
+        mAccelerometerGraph.addSeries(zSeries);
+        showPointLabel();
+    }
+
+    private void showPointLabel() {
+        mAccelerometerGraph.getLegendRenderer().setVisible(true);
+        mAccelerometerGraph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+    }
+
+
+
+    private void initTimeAxisLabel() {
+        GridLabelRenderer labelRenderer = mAccelerometerGraph.getGridLabelRenderer();
+        labelRenderer.setLabelFormatter(new DateAsXAxisLabelFormatter(getActivity(),
+                new SimpleDateFormat("HH:mm:ss")));
+    }
+
+    private DataPoint createDataPoint(Date date, float axis) {
         return new DataPoint(date, axis);
     }
 }

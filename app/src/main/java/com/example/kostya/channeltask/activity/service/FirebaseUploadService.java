@@ -55,16 +55,15 @@ public class FirebaseUploadService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        super.onStartCommand(intent, flags, startId);
-        return START_STICKY;
+        return super.onStartCommand(intent, flags, startId);
     }
 
-    @Override
-    public void onDestroy() {
-        Log.d(TAG, "Service stopped");
-        unregisterSensor();
-        super.onDestroy();
-    }
+//    @Override
+//    public void onDestroy() {
+//        Log.d(TAG, "Service stopped");
+//        unregisterSensor();
+//        super.onDestroy();
+//    }
 
     //============================================= Interaction with Service=======================================
     public void startAccSensor() {
@@ -163,15 +162,15 @@ public class FirebaseUploadService extends Service {
         mSensorUpdateTimer = null;
     }
 
-    private void registerSensor() {
-        mSensorManager.registerListener(mSensorEventListener, mAccelerometerSensor
-                , SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
     private String getSessionStartDate() {
         DateFormat sessionDate = new SimpleDateFormat("dd:MM:yyyy HH:mm:ss");
         Date date = new Date();
         return sessionDate.format(date);
+    }
+
+    private void registerSensor() {
+        mSensorManager.registerListener(mSensorEventListener, mAccelerometerSensor,
+                SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     private void unregisterSensor() {
