@@ -40,8 +40,6 @@ import java.util.Date;
 public class AccelerometerTaskActivity extends AppCompatActivity implements AccelerometerSessionFragment.OnSessionClickListener {
     private Spinner mSensorDelaySpinner;
     private FirebaseUploadService mFirebaseUploadService;
-    private boolean mIsBound;
-    private boolean mIsStarted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,20 +58,15 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
     }
 
     public void onClickStartAccSensor(View view) {
-//        onBindService();
         startService();
         mFirebaseUploadService.startAccSensor();
-//        mIsStarted = true;
-//        PrefManager.getPrefManager().setIsSessionStarted(mIsStarted, AccelerometerTaskActivity.this);
+        PrefManager.getPrefManager().setIsSessionStarted(true, AccelerometerTaskActivity.this);
     }
 
     public void onClickStopAccSensor(View view) {
         mFirebaseUploadService.stopAccSensor();
-//        stopService();
-//        mIsStarted = false;
-//        PrefManager.getPrefManager().setIsSessionStarted(mIsStarted, AccelerometerTaskActivity.this);
-//        stopService();
-//        unBindService();
+        setIsRunning(false);
+
     }
 
     @Override
@@ -101,13 +94,6 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
 
     @Override
     protected void onDestroy() {
-//        unBindService();
-//        mIsStarted = PrefManager.getPrefManager().getIsSessionStarted(AccelerometerTaskActivity.this);
-//        if (mIsStarted) {
-//            startService(FirebaseUploadService.ACTION_SHOW_NOTIFICATION);
-//        }
-//        if(mIsStarted)
-//            mFirebaseUploadService.setNotification();
         super.onDestroy();
     }
 
@@ -120,7 +106,6 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             mFirebaseUploadService = ((FirebaseUploadService.FirebaseUploadServiceBinder) service).getService();
-            mIsBound = true;
         }
 
         @Override
@@ -132,13 +117,6 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
     private void onBindService() {
         Intent intent = new Intent(AccelerometerTaskActivity.this, FirebaseUploadService.class);
         bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
-    }
-
-    private void unBindService() {
-        if (mIsBound) {
-            unbindService(mServiceConnection);
-            mIsBound = false;
-        }
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -156,18 +134,18 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
                 int durationInSec = Integer.parseInt(textView.getText().toString()) * 60000;
 
                 mFirebaseUploadService.setServiceUpdateDuration(durationInSec);
+                setIsRunning(false);
                 mFirebaseUploadService.startAccSensor();
-
-//                setServiceUpdateDuration(durationInSec);
-//                addSessionToFirebase();
-//                registerSensor();
             } else {
-//                unregisterSensor();
                 mFirebaseUploadService.stopAccSensor();
             }
             return false;
         }
     };
+
+    private void setIsRunning(boolean isRunning) {
+        PrefManager.getPrefManager().setIsSessionStarted(isRunning, AccelerometerTaskActivity.this);
+    }
 
     private void spinnerSelectedItemClickListener() {
         mSensorDelaySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -179,7 +157,6 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-//                stopService();
             }
         });
     }

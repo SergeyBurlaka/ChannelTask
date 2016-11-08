@@ -20,6 +20,7 @@ import com.example.kostya.channeltask.FirebaseHelper;
 import com.example.kostya.channeltask.activity.accelerometer.AccelerometerTaskActivity;
 import com.example.kostya.channeltask.model.acc_model.AccelerometerData;
 import com.example.kostya.channeltask.model.acc_model.Session;
+import com.example.kostya.channeltask.prefs.PrefManager;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -27,10 +28,6 @@ import java.util.Date;
 import java.util.Random;
 
 public class FirebaseUploadService extends Service {
-    public static final String ACTION_START_UPLOAD = "ACTION_START_UPLOAD";
-    public static final String ACTION_STOP_UPLOAD = "ACTION_STOP_UPLOAD";
-    public static final String ACTION_SHOW_NOTIFICATION = "ACTION_SHOW_NOTIFICATION";
-
 
     private static final int NOTIFICATION_ID = 1;
     private static final String TAG = FirebaseUploadService.class.getSimpleName();
@@ -59,21 +56,6 @@ public class FirebaseUploadService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-
-        if (intent != null && intent.getAction() != null) {
-            switch (intent.getAction()) {
-                case ACTION_START_UPLOAD:
-//                    registerSensor();
-                    break;
-//                case ACTION_STOP_UPLOAD:
-//                    unregisterSensor();
-//                    stopSelf();
-//                    break;
-//                case ACTION_SHOW_NOTIFICATION:
-//                    setNotification();
-//                    break;
-            }
-        }
         return START_STICKY;
     }
 
@@ -86,17 +68,18 @@ public class FirebaseUploadService extends Service {
 
     //============================================= Interaction with Service=======================================
     public void startAccSensor() {
-        addSessionToFirebase();
-        setNotification();
-        registerSensor();
+        boolean isRunning = PrefManager.getPrefManager().getIsSessionStarted(FirebaseUploadService.this);
+        if (!isRunning) {
+            addSessionToFirebase();
+            setNotification();
+            registerSensor();
+        }
     }
 
     public void stopAccSensor() {
         unregisterSensor();
         cancelSensorUpdateTimer();
-//        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-//        notificationManager.cancelAll();
-        stopSelf();
+        stopForeground(true);
     }
 
     public void setSensorDelayMS(int ms) {
@@ -112,7 +95,7 @@ public class FirebaseUploadService extends Service {
             @Override
             public void onFinish() {
                 unregisterSensor();
-                stopSelf();
+                stopForeground(true);
             }
         };
         updateDuration.start();
@@ -192,6 +175,7 @@ public class FirebaseUploadService extends Service {
     }
 
     private void unregisterSensor() {
+        PrefManager.getPrefManager().setIsSessionStarted(false, FirebaseUploadService.this);
         mSensorManager.unregisterListener(mSensorEventListener);
     }
 
@@ -205,7 +189,6 @@ public class FirebaseUploadService extends Service {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                 Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-//        Random gerenator = new Random();
         PendingIntent pendingIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis() / 1000,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT);
         mBuilder.setContentIntent(pendingIntent);
