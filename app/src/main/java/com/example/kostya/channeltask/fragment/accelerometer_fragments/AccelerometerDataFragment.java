@@ -40,9 +40,8 @@ public class AccelerometerDataFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_recycler_view, container, false);
-        RecyclerView recyclerView = (RecyclerView)view.findViewById(R.id.recycler_view);
+        View view = inflater.inflate(R.layout.fragment_recycler_view, container, false);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         initAccelerometerDataList(recyclerView);
         return view;

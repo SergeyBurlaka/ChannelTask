@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,16 +13,13 @@ import com.example.kostya.channeltask.FirebaseHelper;
 import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.holder.acc_holders.SessionHolder;
 import com.example.kostya.channeltask.model.acc_model.Session;
-import com.example.kostya.channeltask.prefs.PrefManager;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 
 public class AccelerometerSessionFragment extends Fragment {
 
-    private static final String TAG = AccelerometerSessionFragment.class.getSimpleName();
-    private OnSessionClickListener mOnSessionClickListener;
-    
-    public interface OnSessionClickListener {
+    private OnAccelerometerSessionFragmentInteractions mOnAccelerometerSessionFragmentInteractions;
+    public interface OnAccelerometerSessionFragmentInteractions {
         void onSessionClick(String sessionName);
     }
 
@@ -36,18 +32,17 @@ public class AccelerometerSessionFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnSessionClickListener) {
-            mOnSessionClickListener = (OnSessionClickListener) context;
+        if (context instanceof OnAccelerometerSessionFragmentInteractions) {
+            mOnAccelerometerSessionFragmentInteractions = (OnAccelerometerSessionFragmentInteractions) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnSessionClickListener");
+                    + " must implement OnAccelerometerSessionFragmentInteractions");
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_recycler_view, container, false);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -75,9 +70,7 @@ public class AccelerometerSessionFragment extends Fragment {
         holder.setOnSessionClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mOnSessionClickListener.onSessionClick(session.getDate());
-                String date = session.getDate();
-                Log.i(TAG, date);
+                mOnAccelerometerSessionFragmentInteractions.onSessionClick(session.getDate());
             }
         });
     }

@@ -4,9 +4,6 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
-import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -28,18 +25,12 @@ import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.activity.ChooserActivity;
 import com.example.kostya.channeltask.activity.service.FirebaseUploadService;
 import com.example.kostya.channeltask.fragment.accelerometer_fragments.AccelerometerSessionFragment;
-import com.example.kostya.channeltask.model.acc_model.AccelerometerData;
-import com.example.kostya.channeltask.model.acc_model.Session;
 import com.example.kostya.channeltask.prefs.PrefManager;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-public class AccelerometerTaskActivity extends AppCompatActivity implements AccelerometerSessionFragment.OnSessionClickListener {
+public class AccelerometerTaskActivity extends AppCompatActivity implements AccelerometerSessionFragment.OnAccelerometerSessionFragmentInteractions {
     private Spinner mSensorDelaySpinner;
     private FirebaseUploadService mFirebaseUploadService;
 
@@ -52,7 +43,6 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
         EditText serviceDurationInput = (EditText) findViewById(R.id.service_duration_edit_text);
         serviceDurationInput.setOnEditorActionListener(mOnEditorActionListener);
 
-        startService();
         onBindService();
         spinnerSelectedItemClickListener();
         replaceFragment(new AccelerometerSessionFragment());
@@ -135,8 +125,8 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
             if (!textView.getText().toString().equals("")) {
                 int durationInSec = Integer.parseInt(textView.getText().toString()) * 60000;
 
+                mFirebaseUploadService.stopAccSensor();
                 mFirebaseUploadService.setServiceUpdateDuration(durationInSec);
-                setIsRunning(false);
                 mFirebaseUploadService.startAccSensor();
             } else {
                 mFirebaseUploadService.stopAccSensor();

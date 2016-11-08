@@ -37,9 +37,9 @@ public class AccelerometerGraphFragment extends Fragment {
     private List<AccelerometerData> mAccelerometerDataList;
     private String mSessionName;
     private GraphView mAccelerometerGraph;
-    private LineGraphSeries<DataPoint> xSeries;
-    private LineGraphSeries<DataPoint> ySeries;
-    private LineGraphSeries<DataPoint> zSeries;
+    private LineGraphSeries<DataPoint> mXSeries;
+    private LineGraphSeries<DataPoint> mYSeries;
+    private LineGraphSeries<DataPoint> mZSeries;
 
     public static AccelerometerGraphFragment newInstance(String sessionName) {
         AccelerometerGraphFragment fragment = new AccelerometerGraphFragment();
@@ -87,9 +87,9 @@ public class AccelerometerGraphFragment extends Fragment {
     }
 
     private void buildGraph() {
-        xSeries = new LineGraphSeries<>();
-        ySeries = new LineGraphSeries<>();
-        zSeries = new LineGraphSeries<>();
+        mXSeries = new LineGraphSeries<>();
+        mYSeries = new LineGraphSeries<>();
+        mZSeries = new LineGraphSeries<>();
 
         for (int i = 0; i < mAccelerometerDataList.size(); i++) {
             float x = mAccelerometerDataList.get(i).getX();
@@ -116,20 +116,20 @@ public class AccelerometerGraphFragment extends Fragment {
     }
 
     private void appendSeriesData(float x, float y, float z, Date sessionDate) {
-        zSeries.appendData(createDataPoint(sessionDate, z), true, mAccelerometerDataList.size());
-        ySeries.appendData(createDataPoint(sessionDate, y), true, mAccelerometerDataList.size());
-        xSeries.appendData(createDataPoint(sessionDate, x), true, mAccelerometerDataList.size());
+        mZSeries.appendData(createDataPoint(sessionDate, z), true, mAccelerometerDataList.size());
+        mYSeries.appendData(createDataPoint(sessionDate, y), true, mAccelerometerDataList.size());
+        mXSeries.appendData(createDataPoint(sessionDate, x), true, mAccelerometerDataList.size());
         seriesStyle();
     }
 
     private void seriesStyle() {
-        xSeries.setColor(Color.RED);
-        ySeries.setColor(Color.BLACK);
-        zSeries.setColor(Color.BLUE);
+        mXSeries.setColor(Color.RED);
+        mYSeries.setColor(Color.BLACK);
+        mZSeries.setColor(Color.BLUE);
 
-        xSeries.setTitle("x");
-        ySeries.setTitle("y");
-        zSeries.setTitle("z");
+        mXSeries.setTitle("x");
+        mYSeries.setTitle("y");
+        mZSeries.setTitle("z");
     }
 
     private void addSeries() {
@@ -137,9 +137,9 @@ public class AccelerometerGraphFragment extends Fragment {
         if (mAccelerometerGraph.getSeries() != null) {
             mAccelerometerGraph.removeAllSeries();
         }
-        mAccelerometerGraph.addSeries(xSeries);
-        mAccelerometerGraph.addSeries(ySeries);
-        mAccelerometerGraph.addSeries(zSeries);
+        mAccelerometerGraph.addSeries(mXSeries);
+        mAccelerometerGraph.addSeries(mYSeries);
+        mAccelerometerGraph.addSeries(mZSeries);
         showPointLabel();
     }
 
@@ -147,7 +147,6 @@ public class AccelerometerGraphFragment extends Fragment {
         mAccelerometerGraph.getLegendRenderer().setVisible(true);
         mAccelerometerGraph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
     }
-
 
 
     private void initTimeAxisLabel() {
