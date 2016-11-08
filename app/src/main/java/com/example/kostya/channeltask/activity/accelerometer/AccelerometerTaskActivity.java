@@ -1,6 +1,7 @@
 package com.example.kostya.channeltask.activity.accelerometer;
 
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.hardware.Sensor;
@@ -10,6 +11,7 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -174,23 +176,49 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
     }
 
 
-
     private void logout() {
-        FirebaseHelper
-                .deleteUser(PrefManager.getPrefManager()
-                        .getUniqueUser(AccelerometerTaskActivity.this));
+        boolean isRunning = PrefManager.getPrefManager().getIsSessionStarted(AccelerometerTaskActivity.this);
 
-        AuthUI.getInstance()
-                .signOut(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Intent intent = new Intent(AccelerometerTaskActivity.this,
-                                    ChooserActivity.class);
-                            startActivity(intent);
+        if (!isRunning) {
+            mFirebaseUploadService.stopAccSensor();
+            FirebaseHelper
+                    .deleteUser(PrefManager.getPrefManager()
+                            .getUniqueUser(AccelerometerTaskActivity.this));
+
+            AuthUI.getInstance()
+                    .signOut(this)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Intent intent = new Intent(AccelerometerTaskActivity.this,
+                                        ChooserActivity.class);
+                                startActivity(intent);
+                            }
                         }
-                    }
-                });
+                    });
+        } else {
+            showAlertDialog();
+
+        }
+    }
+
+    private void showAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(AccelerometerTaskActivity.this);
+        builder
+                .setTitle("Service will be stopped")
+                .setIcon(android.R.drawable.sym_def_app_icon)
+                .setCancelable(false)
+                .setNegativeButton("Ok",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                                PrefManager.getPrefManager().setIsSessionStarted(false, AccelerometerTaskActivity.this);
+                                logout();
+                            }
+                        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }
