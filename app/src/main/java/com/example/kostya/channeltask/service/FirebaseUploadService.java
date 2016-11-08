@@ -1,4 +1,4 @@
-package com.example.kostya.channeltask.activity.service;
+package com.example.kostya.channeltask.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -14,7 +14,6 @@ import android.os.Binder;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.example.kostya.channeltask.FirebaseHelper;
 import com.example.kostya.channeltask.activity.accelerometer.AccelerometerTaskActivity;
@@ -25,7 +24,6 @@ import com.example.kostya.channeltask.prefs.PrefManager;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
 
 public class FirebaseUploadService extends Service {
 

@@ -23,7 +23,7 @@ import android.widget.TextView;
 import com.example.kostya.channeltask.FirebaseHelper;
 import com.example.kostya.channeltask.R;
 import com.example.kostya.channeltask.activity.ChooserActivity;
-import com.example.kostya.channeltask.activity.service.FirebaseUploadService;
+import com.example.kostya.channeltask.service.FirebaseUploadService;
 import com.example.kostya.channeltask.fragment.accelerometer_fragments.AccelerometerSessionFragment;
 import com.example.kostya.channeltask.prefs.PrefManager;
 import com.firebase.ui.auth.AuthUI;

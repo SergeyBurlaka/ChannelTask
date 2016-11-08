@@ -28,7 +28,7 @@
         </activity>
 
         <service
-            android:name=".activity.service.FirebaseUploadService"
+            android:name=".service.FirebaseUploadService"
             android:enabled="true"
             android:exported="true">
         </service>

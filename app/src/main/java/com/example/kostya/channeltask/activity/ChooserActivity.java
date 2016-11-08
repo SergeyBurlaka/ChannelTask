@@ -31,7 +31,6 @@ public class ChooserActivity extends AppCompatActivity {
     private void firebaseLogin() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
-//            openChannelTaskActivity();
             initUserInfo();
             //signed in
         } else {
