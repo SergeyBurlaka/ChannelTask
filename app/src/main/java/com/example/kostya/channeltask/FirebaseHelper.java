@@ -8,6 +8,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -67,6 +68,17 @@ public class FirebaseHelper {
 
     public static DatabaseReference getFaveReference() {
         return FIREBASE_FAVES_REFERENCE.child(sUniqueUserId);
+    }
+
+    public static Query orderByDateQuery(String sessionName) {
+        return getDataFromSession(sessionName)
+                .orderByChild("date");
+    }
+
+    public static Query orderBySessionDate() {
+        return getDataFromAllAccelerometerSessions()
+                .orderByChild("date")
+                .startAt("session");
     }
 
     public static DatabaseReference getAccelerometerDataForUser(String sessionName) {
@@ -152,4 +164,5 @@ public class FirebaseHelper {
         });
         return faveList;
     }
+
 }

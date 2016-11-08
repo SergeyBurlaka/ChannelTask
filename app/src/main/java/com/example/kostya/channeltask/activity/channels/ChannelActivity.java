@@ -73,7 +73,7 @@ public class ChannelActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_logout) {
-            logout();
+            onLogoutClick();
             return true;
         }
 
@@ -107,7 +107,7 @@ public class ChannelActivity extends AppCompatActivity
                 .commit();
     }
 
-    private void logout() {
+    private void onLogoutClick() {
         FirebaseHelper
                 .deleteUser(PrefManager.getPrefManager()
                         .getUniqueUser(ChannelActivity.this));

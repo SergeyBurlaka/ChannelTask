@@ -3,6 +3,7 @@ package com.example.kostya.channeltask.activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.example.kostya.channeltask.FirebaseHelper;
@@ -19,11 +20,28 @@ import com.google.firebase.auth.UserInfo;
 import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
 
 public class ChooserActivity extends AppCompatActivity {
+    private static final String SHARED_PREFS = "tags";
+    private static final String OPEN_APP = "openApp";
+    private static final String TAG = ChooserActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chooser);
+        //TODO:Handle intent
+        Bundle extras = getIntent().getExtras();
+        Log.d(TAG, "onCreate: hellllo");
+        if(extras != null) {
+            if (extras.containsKey(SHARED_PREFS)) {
+                String shared = extras.getString(SHARED_PREFS);
+                Log.i(TAG, "Message:" + shared);
+            } else {
+                Log.d(TAG, "onCreate: no key SHARED_PREFS");
+            }
+
+        } else {
+            Log.d(TAG, "onCreate: extras null");
+        }
 
         firebaseLogin();
     }

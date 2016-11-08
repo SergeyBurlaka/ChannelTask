@@ -13,6 +13,7 @@ import com.example.kostya.channeltask.model.acc_model.AccelerometerData;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
@@ -67,8 +68,8 @@ public class AccelerometerGraphFragment extends Fragment {
     }
 
     private void initGraph() {
-        DatabaseReference reference = FirebaseHelper.getAccelerometerDataForUser(mSessionName);
-        reference.orderByChild("date").addValueEventListener(new ValueEventListener() {
+        Query query = FirebaseHelper.orderByDateQuery(mSessionName);
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mAccelerometerDataList = new ArrayList<>();
@@ -91,15 +92,16 @@ public class AccelerometerGraphFragment extends Fragment {
         mYSeries = new LineGraphSeries<>();
         mZSeries = new LineGraphSeries<>();
 
-        for (int i = 0; i < mAccelerometerDataList.size(); i++) {
-            float x = mAccelerometerDataList.get(i).getX();
-            float y = mAccelerometerDataList.get(i).getY();
-            float z = mAccelerometerDataList.get(i).getZ();
-            String date = mAccelerometerDataList.get(i).getDate();
+        for (AccelerometerData item :mAccelerometerDataList) {
+            float x = item.getX();
+            float y = item.getY();
+            float z = item.getZ();
+            String date = item.getDate();
             Date sessionDate = getDate(date);
 
             appendSeriesData(x, y, z, sessionDate);
         }
+
         addSeries();
         initTimeAxisLabel();
     }
@@ -124,11 +126,12 @@ public class AccelerometerGraphFragment extends Fragment {
 
     private void seriesStyle() {
         mXSeries.setColor(Color.RED);
-        mYSeries.setColor(Color.BLACK);
-        mZSeries.setColor(Color.BLUE);
-
         mXSeries.setTitle("x");
+
+        mYSeries.setColor(Color.BLACK);
         mYSeries.setTitle("y");
+
+        mZSeries.setColor(Color.BLUE);
         mZSeries.setTitle("z");
     }
 

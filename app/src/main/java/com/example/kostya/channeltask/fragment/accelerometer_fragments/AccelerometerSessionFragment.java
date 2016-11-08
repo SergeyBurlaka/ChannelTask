@@ -15,6 +15,7 @@ import com.example.kostya.channeltask.holder.acc_holders.SessionHolder;
 import com.example.kostya.channeltask.model.acc_model.Session;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 
 public class AccelerometerSessionFragment extends Fragment {
 
@@ -48,20 +49,20 @@ public class AccelerometerSessionFragment extends Fragment {
     }
 
     private void initAccelerometerDataList(RecyclerView recyclerView) {
-        DatabaseReference reference = FirebaseHelper.getDataFromAllAccelerometerSessions();
+        Query query  = FirebaseHelper.orderBySessionDate();
         FirebaseRecyclerAdapter firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Session, SessionHolder>(Session.class,
                 R.layout.fragment_accelerometer_item, SessionHolder.class,
-                reference.orderByChild("date").startAt("session")) {
+                query) {
             @Override
             protected void populateViewHolder(SessionHolder sessionHolder, Session session, int position) {
                 sessionHolder.setDate(session.getDate());
-                sessionClick(sessionHolder, session);
+                setOnSessionClick(sessionHolder, session);
             }
         };
         recyclerView.setAdapter(firebaseRecyclerAdapter);
     }
 
-    private void sessionClick(final SessionHolder holder, final Session session) {
+    private void setOnSessionClick(final SessionHolder holder, final Session session) {
         holder.setOnSessionClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -4,6 +4,9 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+
+import java.util.concurrent.TimeUnit;
+
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -34,6 +37,21 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
     private Spinner mSensorDelaySpinner;
     private FirebaseUploadService mFirebaseUploadService;
 
+    /////////////// LISTENERS AREA
+
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder service) {
+            mFirebaseUploadService = ((FirebaseUploadService.FirebaseUploadServiceBinder) service).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+
+        }
+    };
+
+    /////////////// LISTENERS AREA END
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +62,7 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
         serviceDurationInput.setOnEditorActionListener(mOnEditorActionListener);
 
         onBindService();
-        spinnerSelectedItemClickListener();
+        initSpinnerSelectedItemClickListener();
         replaceFragment(new AccelerometerSessionFragment());
 
     }
@@ -70,7 +88,7 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_logout:
-                logout();
+                onLogoutClick();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -83,17 +101,6 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
         startActivity(intent);
     }
 
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder service) {
-            mFirebaseUploadService = ((FirebaseUploadService.FirebaseUploadServiceBinder) service).getService();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-
-        }
-    };
 
     private void onBindService() {
         Intent intent = new Intent(AccelerometerTaskActivity.this, FirebaseUploadService.class);
@@ -112,10 +119,12 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
         @Override
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
             if (!textView.getText().toString().equals("")) {
-                int durationInSec = Integer.parseInt(textView.getText().toString()) * 60000;
+                int timeMin = Integer.parseInt(textView.getText().toString());
+
+                long durationInSec = TimeUnit.MINUTES.toMillis(timeMin);
 
                 mFirebaseUploadService.stopAccSensor();
-                mFirebaseUploadService.setServiceUpdateDuration(durationInSec);
+                mFirebaseUploadService.setServiceUpdateDuration((int) durationInSec);
                 mFirebaseUploadService.startAccSensor();
             } else {
                 mFirebaseUploadService.stopAccSensor();
@@ -124,7 +133,7 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
         }
     };
 
-    private void spinnerSelectedItemClickListener() {
+    private void initSpinnerSelectedItemClickListener() {
         mSensorDelaySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
@@ -154,49 +163,54 @@ public class AccelerometerTaskActivity extends AppCompatActivity implements Acce
         PrefManager.getPrefManager().setIsSessionStarted(isRunning, AccelerometerTaskActivity.this);
     }
 
-    private void logout() {
+    private void onLogoutClick() {
         boolean isRunning = PrefManager.getPrefManager().getIsSessionStarted(AccelerometerTaskActivity.this);
 
         if (!isRunning) {
-            mFirebaseUploadService.stopAccSensor();
-            FirebaseHelper
-                    .deleteUser(PrefManager.getPrefManager()
-                            .getUniqueUser(AccelerometerTaskActivity.this));
-
-            AuthUI.getInstance()
-                    .signOut(this)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Intent intent = new Intent(AccelerometerTaskActivity.this,
-                                        ChooserActivity.class);
-                                startActivity(intent);
-                            }
-                        }
-                    });
+            logout();
         } else {
             showAlertDialog();
-
         }
     }
 
+    private void logout() {
+        mFirebaseUploadService.stopAccSensor();
+        FirebaseHelper
+                .deleteUser(PrefManager.getPrefManager()
+                        .getUniqueUser(AccelerometerTaskActivity.this));
+
+        AuthUI.getInstance()
+                .signOut(this)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Intent intent = new Intent(AccelerometerTaskActivity.this,
+                                    ChooserActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                });
+    }
+
     private void showAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(AccelerometerTaskActivity.this);
-        builder
+        AlertDialog dialog = new AlertDialog.Builder(AccelerometerTaskActivity.this)
                 .setTitle("Service will be stopped")
-                .setIcon(android.R.drawable.sym_def_app_icon)
-                .setCancelable(false)
-                .setNegativeButton("Ok",
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(android.R.string.ok,
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.cancel();
                                 PrefManager.getPrefManager().setIsSessionStarted(false, AccelerometerTaskActivity.this);
-                                logout();
+                                onLogoutClick();
                             }
-                        });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+                        }
+                )
+                .setCancelable(false)
+                .create();
+
+        dialog.show();
+
     }
 }
